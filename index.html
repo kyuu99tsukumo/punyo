@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>punyo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(ellipse at center, #0d4a5a 0%, #072838 55%, #041820 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Hiragino Sans', sans-serif;
+    overflow: hidden;
+  }
+
+  .blob {
+    width: 220px;
+    height: 220px;
+    animation: punya 3.2s ease-in-out infinite;
+    margin-bottom: 48px;
+  }
+
+  @keyframes punya {
+    0%   { transform: scale(1, 1); }
+    22%  { transform: scale(1.07, 0.93); }
+    48%  { transform: scale(0.94, 1.08); }
+    72%  { transform: scale(1.05, 0.96); }
+    100% { transform: scale(1, 1); }
+  }
+  @keyframes inner-drift {
+    0%   { transform: translate(0,0) scale(1); opacity: 0.55; }
+    40%  { transform: translate(6px,-8px) scale(1.1); opacity: 0.75; }
+    70%  { transform: translate(-5px,5px) scale(0.94); opacity: 0.45; }
+    100% { transform: translate(0,0) scale(1); opacity: 0.55; }
+  }
+  @keyframes hl-drift {
+    0%   { transform: translate(0,0); opacity: 0.88; }
+    50%  { transform: translate(-3px,4px); opacity: 1.0; }
+    100% { transform: translate(0,0); opacity: 0.88; }
+  }
+  @keyframes outer-pulse {
+    0%,100% { opacity: 0.20; }
+    50%      { opacity: 0.38; }
+  }
+  .inner-drift { animation: inner-drift 5s ease-in-out infinite; }
+  .hl-drift    { animation: hl-drift 3.8s ease-in-out infinite; }
+  .outer-pulse { animation: outer-pulse 3.2s ease-in-out infinite; }
+
+  .label {
+    color: rgba(255,255,255,0.4);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+  }
+</style>
+</head>
+<body>
+
+<div class="blob">
+  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="outerGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#a0e8f8" stop-opacity="0.18"/>
+        <stop offset="60%"  stop-color="#60c8e8" stop-opacity="0.05"/>
+        <stop offset="100%" stop-color="#40b8d8" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="blobBody" cx="38%" cy="32%" r="72%">
+        <stop offset="0%"   stop-color="#e8f8ff" stop-opacity="0.92"/>
+        <stop offset="22%"  stop-color="#d0f0ff" stop-opacity="0.72"/>
+        <stop offset="48%"  stop-color="#a8e0f8" stop-opacity="0.38"/>
+        <stop offset="72%"  stop-color="#80c8e8" stop-opacity="0.14"/>
+        <stop offset="88%"  stop-color="#60b8d8" stop-opacity="0.06"/>
+        <stop offset="100%" stop-color="#40a8c8" stop-opacity="0.01"/>
+      </radialGradient>
+      <radialGradient id="innerLight" cx="36%" cy="28%" r="60%">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.85"/>
+        <stop offset="35%"  stop-color="#e0f8ff" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#c0eeff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="mainHL" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="1.0"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="bottomRef" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#b0e8ff" stop-opacity="0.25"/>
+        <stop offset="100%" stop-color="#80d0f0" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="softBlur"><feGaussianBlur stdDeviation="7"/></filter>
+      <filter id="tinyBlur"><feGaussianBlur stdDeviation="1.8"/></filter>
+    </defs>
+    <ellipse class="outer-pulse" cx="100" cy="102" rx="88" ry="90"
+             fill="url(#outerGlow)" filter="url(#softBlur)"/>
+    <ellipse cx="100" cy="104" rx="72" ry="76" fill="url(#blobBody)"/>
+    <ellipse cx="100" cy="104" rx="72" ry="76"
+             fill="none" stroke="#90d8f0" stroke-width="0.7" stroke-opacity="0.22"/>
+    <ellipse class="inner-drift" cx="80" cy="74" rx="46" ry="36"
+             fill="url(#innerLight)" filter="url(#tinyBlur)"/>
+    <ellipse class="hl-drift" cx="73" cy="62" rx="20" ry="13"
+             fill="url(#mainHL)"/>
+    <ellipse class="hl-drift" cx="60" cy="54" rx="7" ry="4.5"
+             fill="white" fill-opacity="0.95"/>
+    <ellipse cx="55" cy="50" rx="2.5" ry="1.8"
+             fill="white" fill-opacity="1.0"/>
+    <ellipse cx="118" cy="142" rx="24" ry="12"
+             fill="url(#bottomRef)" filter="url(#tinyBlur)"/>
+  </svg>
+</div>
+
+<p class="label">coming soon</p>
+
+</body>
+</html>
