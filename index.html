@@ -12,9 +12,10 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     font-family: 'Hiragino Sans', sans-serif;
-    overflow: hidden; gap: 20px;
+    overflow: hidden; gap: 16px;
   }
-  .blob { width: 160px; height: 160px; animation: punya 3.2s ease-in-out infinite; }
+
+  .blob { width: 150px; height: 150px; animation: punya 3.2s ease-in-out infinite; }
   @keyframes punya {
     0%{transform:scale(1,1)} 22%{transform:scale(1.07,0.93)}
     48%{transform:scale(0.94,1.08)} 72%{transform:scale(1.05,0.96)} 100%{transform:scale(1,1)}
@@ -46,35 +47,68 @@
   .inner-drift{animation:inner-drift 5s ease-in-out infinite}
   .hl-drift{animation:hl-drift 3.8s ease-in-out infinite}
   .outer-pulse{animation:outer-pulse 3.2s ease-in-out infinite}
-  .emotion-buttons { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; width:280px; }
+
+  /* 入力エリア */
+  .input-area {
+    display: flex; flex-direction: column; align-items: center; gap: 12px; width: 290px;
+  }
+
+  /* 感情ボタン */
+  .emotion-buttons { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; width:100%; }
   .emotion-btn {
-    padding:8px 0; border:1px solid rgba(255,255,255,0.2);
-    border-radius:18px; background:rgba(255,255,255,0.06);
+    padding:7px 0; border:1px solid rgba(255,255,255,0.2);
+    border-radius:16px; background:rgba(255,255,255,0.06);
     color:rgba(255,255,255,0.7); font-size:12px;
     cursor:pointer; transition:all .2s ease; text-align:center;
   }
   .emotion-btn:hover{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.4)}
   .emotion-btn.active{background:rgba(255,255,255,.22);color:#fff;border-color:rgba(255,255,255,.6)}
-  .color-panel{display:none;flex-direction:column;align-items:center;gap:8px}
-  .color-panel.visible{display:flex}
-  #colorCanvas{width:260px;height:120px;border-radius:8px;cursor:crosshair;border:1px solid rgba(255,255,255,.15)}
+
+  /* カラーパネル */
+  #colorCanvas{width:100%;height:110px;border-radius:8px;cursor:crosshair;border:1px solid rgba(255,255,255,.15);display:block;}
   .selected-color{display:flex;align-items:center;gap:8px}
-  .color-swatch{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:#888}
-  .color-code{color:rgba(255,255,255,.6);font-size:12px;letter-spacing:.1em}
-  .apply-btn{
-    padding:8px 24px;border:none;border-radius:18px;
-    background:rgba(255,255,255,.14);color:#fff;font-size:13px;cursor:pointer;transition:background .2s
+  .color-swatch{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:#888;flex-shrink:0}
+  .color-code{color:rgba(255,255,255,.5);font-size:11px;letter-spacing:.1em}
+
+  /* %スライダー */
+  .percent-row {
+    display: flex; align-items: center; gap: 8px; width: 100%;
   }
-  .apply-btn:hover{background:rgba(255,255,255,.24)}
-  .records{display:flex;gap:10px;align-items:center;min-height:52px}
+  .percent-label { color: rgba(255,255,255,.5); font-size: 11px; white-space: nowrap; }
+  .percent-slider {
+    flex: 1; -webkit-appearance: none; height: 3px;
+    border-radius: 2px; background: rgba(255,255,255,.2); outline: none;
+  }
+  .percent-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px;
+    border-radius: 50%; background: rgba(255,255,255,.8); cursor: pointer;
+  }
+  .percent-value { color: #fff; font-size: 13px; font-weight: bold; width: 38px; text-align: right; }
+
+  /* 入れるボタン */
+  .apply-btn {
+    padding:8px 28px; border:none; border-radius:18px;
+    background:rgba(255,255,255,.08); color:rgba(255,255,255,.4); font-size:13px;
+    cursor:not-allowed; transition:all .2s; width:100%;
+  }
+  .apply-btn.ready {
+    background:rgba(255,255,255,.18); color:#fff; cursor:pointer;
+  }
+  .apply-btn.ready:hover{background:rgba(255,255,255,.28)}
+
+  /* 記録 */
+  .records{display:flex;gap:8px;align-items:center;min-height:48px}
   .record-item{
-    display:flex;flex-direction:column;align-items:center;gap:4px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
     background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-    border-radius:14px;padding:8px 12px;min-width:72px;
+    border-radius:12px;padding:7px 10px;min-width:72px;
   }
-  .record-swatch{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3)}
-  .record-emotion{color:rgba(255,255,255,.8);font-size:12px}
-  .record-code{color:rgba(255,255,255,.4);font-size:10px;letter-spacing:.05em}
+  .record-swatch{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3)}
+  .record-emotion{color:rgba(255,255,255,.8);font-size:11px}
+  .record-pct{color:rgba(255,255,255,.5);font-size:11px}
+  .record-code{color:rgba(255,255,255,.35);font-size:9px;letter-spacing:.05em}
+
+  /* モーダル */
   .modal-overlay{
     display:none;position:fixed;inset:0;
     background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
@@ -83,21 +117,23 @@
   .modal-overlay.visible{display:flex}
   .modal{
     background:#0d2a35;border:1px solid rgba(255,255,255,.15);
-    border-radius:20px;padding:24px;width:300px;
-    display:flex;flex-direction:column;align-items:center;gap:16px;
+    border-radius:20px;padding:24px;width:290px;
+    display:flex;flex-direction:column;align-items:center;gap:14px;
   }
   .modal-title{color:rgba(255,255,255,.8);font-size:14px;text-align:center}
   .modal-records{display:flex;flex-direction:column;gap:8px;width:100%}
   .modal-record{
-    display:flex;align-items:center;gap:12px;
+    display:flex;align-items:center;gap:10px;
     background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-    border-radius:12px;padding:10px 14px;cursor:pointer;transition:background .2s;
+    border-radius:12px;padding:9px 12px;cursor:pointer;transition:background .2s;
   }
   .modal-record:hover{background:rgba(255,255,255,.15)}
-  .modal-swatch{width:20px;height:20px;border-radius:50%;flex-shrink:0}
+  .modal-swatch{width:18px;height:18px;border-radius:50%;flex-shrink:0}
+  .modal-info{display:flex;flex-direction:column;gap:2px}
   .modal-emotion{color:#fff;font-size:13px}
+  .modal-pct{color:rgba(255,255,255,.5);font-size:11px}
   .modal-cancel{
-    padding:8px 24px;border:1px solid rgba(255,255,255,.2);border-radius:18px;
+    padding:7px 22px;border:1px solid rgba(255,255,255,.2);border-radius:16px;
     background:transparent;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;transition:all .2s
   }
   .modal-cancel:hover{background:rgba(255,255,255,.08);color:#fff}
@@ -148,28 +184,40 @@
   </svg>
 </div>
 
-<div class="emotion-buttons">
-  <button class="emotion-btn" data-emotion="喜び" data-type="joy">喜び</button>
-  <button class="emotion-btn" data-emotion="期待" data-type="joy">期待</button>
-  <button class="emotion-btn" data-emotion="信頼" data-type="calm">信頼</button>
-  <button class="emotion-btn" data-emotion="驚き" data-type="joy">驚き</button>
-  <button class="emotion-btn" data-emotion="悲しみ" data-type="sad">悲しみ</button>
-  <button class="emotion-btn" data-emotion="嫌悪" data-type="sad">嫌悪</button>
-  <button class="emotion-btn" data-emotion="怒り" data-type="angry">怒り</button>
-  <button class="emotion-btn" data-emotion="恐れ" data-type="angry">恐れ</button>
-</div>
+<div class="input-area">
+  <!-- 感情ボタン -->
+  <div class="emotion-buttons">
+    <button class="emotion-btn" data-emotion="喜び" data-type="joy">喜び</button>
+    <button class="emotion-btn" data-emotion="期待" data-type="joy">期待</button>
+    <button class="emotion-btn" data-emotion="信頼" data-type="calm">信頼</button>
+    <button class="emotion-btn" data-emotion="驚き" data-type="joy">驚き</button>
+    <button class="emotion-btn" data-emotion="悲しみ" data-type="sad">悲しみ</button>
+    <button class="emotion-btn" data-emotion="嫌悪" data-type="sad">嫌悪</button>
+    <button class="emotion-btn" data-emotion="怒り" data-type="angry">怒り</button>
+    <button class="emotion-btn" data-emotion="恐れ" data-type="angry">恐れ</button>
+  </div>
 
-<div class="color-panel" id="colorPanel">
-  <canvas id="colorCanvas" width="520" height="240"></canvas>
+  <!-- カラーパネル -->
+  <canvas id="colorCanvas" width="580" height="220"></canvas>
   <div class="selected-color">
     <div class="color-swatch" id="colorSwatch"></div>
-    <span class="color-code" id="colorCode">#888888</span>
+    <span class="color-code" id="colorCode">色を選んでください</span>
   </div>
-  <button class="apply-btn" id="applyBtn">この色を入れる</button>
+
+  <!-- %スライダー -->
+  <div class="percent-row">
+    <span class="percent-label">この感情の割合</span>
+    <input type="range" class="percent-slider" id="percentSlider" min="1" max="100" value="50">
+    <span class="percent-value" id="percentValue">50%</span>
+  </div>
+
+  <!-- 入れるボタン -->
+  <button class="apply-btn" id="applyBtn">感情と色を両方選ぶと入れられます</button>
 </div>
 
 <div class="records" id="records"></div>
 
+<!-- モーダル -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <p class="modal-title">どれを変えますか？</p>
@@ -180,22 +228,26 @@
 
 <script>
 const blob=document.getElementById('blob');
-const colorPanel=document.getElementById('colorPanel');
 const canvas=document.getElementById('colorCanvas');
 const ctx=canvas.getContext('2d');
 const swatch=document.getElementById('colorSwatch');
 const codeEl=document.getElementById('colorCode');
 const applyBtn=document.getElementById('applyBtn');
+const percentSlider=document.getElementById('percentSlider');
+const percentValue=document.getElementById('percentValue');
 const recordsEl=document.getElementById('records');
 const modalOverlay=document.getElementById('modalOverlay');
 const modalRecords=document.getElementById('modalRecords');
 const modalCancel=document.getElementById('modalCancel');
-let selectedColor='#888888';
-let selectedEmotion='';
-let selectedType='';
+
+let selectedColor=null;
+let selectedEmotion=null;
+let selectedType=null;
+let selectedPercent=50;
 let records=[];
 let pendingRecord=null;
 
+// カラーパネル描画
 function drawPanel(){
   const w=canvas.width,h=canvas.height;
   for(let x=0;x<w;x++){
@@ -215,6 +267,16 @@ function drawPanel(){
 }
 drawPanel();
 
+function checkReady(){
+  if(selectedColor && selectedEmotion){
+    applyBtn.className='apply-btn ready';
+    applyBtn.textContent='入れる';
+  } else {
+    applyBtn.className='apply-btn';
+    applyBtn.textContent='感情と色を両方選ぶと入れられます';
+  }
+}
+
 canvas.addEventListener('click',e=>{
   const r=canvas.getBoundingClientRect();
   const x=(e.clientX-r.left)*(canvas.width/r.width);
@@ -223,6 +285,7 @@ canvas.addEventListener('click',e=>{
   selectedColor=`#${p[0].toString(16).padStart(2,'0')}${p[1].toString(16).padStart(2,'0')}${p[2].toString(16).padStart(2,'0')}`;
   swatch.style.background=selectedColor;
   codeEl.textContent=selectedColor.toUpperCase();
+  checkReady();
 });
 
 document.querySelectorAll('.emotion-btn').forEach(btn=>{
@@ -232,8 +295,13 @@ document.querySelectorAll('.emotion-btn').forEach(btn=>{
     selectedEmotion=btn.dataset.emotion;
     selectedType=btn.dataset.type;
     blob.className='blob '+selectedType;
-    colorPanel.classList.add('visible');
+    checkReady();
   });
+});
+
+percentSlider.addEventListener('input',()=>{
+  selectedPercent=parseInt(percentSlider.value);
+  percentValue.textContent=selectedPercent+'%';
 });
 
 function applyColorToBlob(color){
@@ -253,13 +321,18 @@ function renderRecords(){
   records.forEach(rec=>{
     const el=document.createElement('div');
     el.className='record-item';
-    el.innerHTML=`<div class="record-swatch" style="background:${rec.color}"></div><span class="record-emotion">${rec.emotion}</span><span class="record-code">${rec.color.toUpperCase()}</span>`;
+    el.innerHTML=`
+      <div class="record-swatch" style="background:${rec.color}"></div>
+      <span class="record-emotion">${rec.emotion}</span>
+      <span class="record-pct">${rec.percent}%</span>
+      <span class="record-code">${rec.color.toUpperCase()}</span>
+    `;
     recordsEl.appendChild(el);
   });
 }
 
-function addRecord(emotion,color,type){
-  const rec={emotion,color,type};
+function addRecord(emotion,color,type,percent){
+  const rec={emotion,color,type,percent};
   if(records.length<3){
     records.push(rec);
     applyColorToBlob(color);
@@ -275,7 +348,13 @@ function showModal(){
   records.forEach((rec,i)=>{
     const el=document.createElement('div');
     el.className='modal-record';
-    el.innerHTML=`<div class="modal-swatch" style="background:${rec.color}"></div><span class="modal-emotion">${rec.emotion}　${rec.color.toUpperCase()}</span>`;
+    el.innerHTML=`
+      <div class="modal-swatch" style="background:${rec.color}"></div>
+      <div class="modal-info">
+        <span class="modal-emotion">${rec.emotion}</span>
+        <span class="modal-pct">${rec.percent}%　${rec.color.toUpperCase()}</span>
+      </div>
+    `;
     el.addEventListener('click',()=>{
       records[i]=pendingRecord;
       pendingRecord=null;
@@ -296,13 +375,20 @@ function hideModal(){
 modalCancel.addEventListener('click',hideModal);
 
 applyBtn.addEventListener('click',()=>{
-  if(selectedColor==='#888888'||!selectedEmotion)return;
-  addRecord(selectedEmotion,selectedColor,selectedType);
-  colorPanel.classList.remove('visible');
-  document.querySelectorAll('.emotion-btn').forEach(b=>b.classList.remove('active'));
-  selectedColor='#888888';
+  if(!selectedColor||!selectedEmotion)return;
+  addRecord(selectedEmotion,selectedColor,selectedType,selectedPercent);
+  // リセット
+  selectedColor=null;
+  selectedEmotion=null;
+  selectedType=null;
+  selectedPercent=50;
+  percentSlider.value=50;
+  percentValue.textContent='50%';
   swatch.style.background='#888';
-  codeEl.textContent='#888888';
+  codeEl.textContent='色を選んでください';
+  document.querySelectorAll('.emotion-btn').forEach(b=>b.classList.remove('active'));
+  blob.className='blob';
+  checkReady();
 });
 </script>
 </body>
