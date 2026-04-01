@@ -12,9 +12,9 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     font-family: 'Hiragino Sans', sans-serif;
-    overflow: hidden; gap: 28px;
+    overflow: hidden; gap: 20px;
   }
-  .blob { width: 190px; height: 190px; animation: punya 3.2s ease-in-out infinite; }
+  .blob { width: 160px; height: 160px; animation: punya 3.2s ease-in-out infinite; }
   @keyframes punya {
     0%{transform:scale(1,1)} 22%{transform:scale(1.07,0.93)}
     48%{transform:scale(0.94,1.08)} 72%{transform:scale(1.05,0.96)} 100%{transform:scale(1,1)}
@@ -36,47 +36,71 @@
   .blob.sad{animation-name:punya-sad;animation-duration:4.5s}
   .blob.joy{animation-name:punya-joy;animation-duration:2.2s}
   @keyframes inner-drift {
-    0%{transform:translate(0,0) scale(1);opacity:.55}
-    40%{transform:translate(6px,-8px) scale(1.1);opacity:.75}
-    70%{transform:translate(-5px,5px) scale(.94);opacity:.45}
-    100%{transform:translate(0,0) scale(1);opacity:.55}
+    0%{transform:translate(0,0) scale(1);opacity:.55} 40%{transform:translate(6px,-8px) scale(1.1);opacity:.75}
+    70%{transform:translate(-5px,5px) scale(.94);opacity:.45} 100%{transform:translate(0,0) scale(1);opacity:.55}
   }
   @keyframes hl-drift {
-    0%{transform:translate(0,0);opacity:.88} 50%{transform:translate(-3px,4px);opacity:1}
-    100%{transform:translate(0,0);opacity:.88}
+    0%{transform:translate(0,0);opacity:.88} 50%{transform:translate(-3px,4px);opacity:1} 100%{transform:translate(0,0);opacity:.88}
   }
-  @keyframes outer-pulse {
-    0%,100%{opacity:.20} 50%{opacity:.38}
-  }
+  @keyframes outer-pulse { 0%,100%{opacity:.20} 50%{opacity:.38} }
   .inner-drift{animation:inner-drift 5s ease-in-out infinite}
   .hl-drift{animation:hl-drift 3.8s ease-in-out infinite}
   .outer-pulse{animation:outer-pulse 3.2s ease-in-out infinite}
-
-  .emotion-buttons {
-    display: grid; grid-template-columns: repeat(4,1fr);
-    gap: 8px; width: 290px;
-  }
+  .emotion-buttons { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; width:280px; }
   .emotion-btn {
-    padding: 9px 0; border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 20px; background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.7); font-size: 13px;
-    cursor: pointer; transition: all .25s ease; text-align: center;
+    padding:8px 0; border:1px solid rgba(255,255,255,0.2);
+    border-radius:18px; background:rgba(255,255,255,0.06);
+    color:rgba(255,255,255,0.7); font-size:12px;
+    cursor:pointer; transition:all .2s ease; text-align:center;
   }
-  .emotion-btn:hover { background:rgba(255,255,255,.14); color:#fff; border-color:rgba(255,255,255,.4); }
-  .emotion-btn.active { background:rgba(255,255,255,.2); color:#fff; border-color:rgba(255,255,255,.6); }
-
-  .color-panel { display:none; flex-direction:column; align-items:center; gap:10px; }
-  .color-panel.visible { display:flex; }
-  #colorCanvas { width:270px; height:130px; border-radius:10px; cursor:crosshair; border:1px solid rgba(255,255,255,.15); }
-  .selected-color { display:flex; align-items:center; gap:10px; }
-  .color-swatch { width:26px; height:26px; border-radius:50%; border:2px solid rgba(255,255,255,.3); background:#888; }
-  .color-code { color:rgba(255,255,255,.6); font-size:13px; letter-spacing:.1em; }
-  .apply-btn {
-    padding:9px 28px; border:none; border-radius:20px;
-    background:rgba(255,255,255,.14); color:#fff; font-size:14px;
-    cursor:pointer; transition:background .2s;
+  .emotion-btn:hover{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.4)}
+  .emotion-btn.active{background:rgba(255,255,255,.22);color:#fff;border-color:rgba(255,255,255,.6)}
+  .color-panel{display:none;flex-direction:column;align-items:center;gap:8px}
+  .color-panel.visible{display:flex}
+  #colorCanvas{width:260px;height:120px;border-radius:8px;cursor:crosshair;border:1px solid rgba(255,255,255,.15)}
+  .selected-color{display:flex;align-items:center;gap:8px}
+  .color-swatch{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:#888}
+  .color-code{color:rgba(255,255,255,.6);font-size:12px;letter-spacing:.1em}
+  .apply-btn{
+    padding:8px 24px;border:none;border-radius:18px;
+    background:rgba(255,255,255,.14);color:#fff;font-size:13px;cursor:pointer;transition:background .2s
   }
-  .apply-btn:hover { background:rgba(255,255,255,.24); }
+  .apply-btn:hover{background:rgba(255,255,255,.24)}
+  .records{display:flex;gap:10px;align-items:center;min-height:52px}
+  .record-item{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;padding:8px 12px;min-width:72px;
+  }
+  .record-swatch{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3)}
+  .record-emotion{color:rgba(255,255,255,.8);font-size:12px}
+  .record-code{color:rgba(255,255,255,.4);font-size:10px;letter-spacing:.05em}
+  .modal-overlay{
+    display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+    align-items:center;justify-content:center;z-index:100;
+  }
+  .modal-overlay.visible{display:flex}
+  .modal{
+    background:#0d2a35;border:1px solid rgba(255,255,255,.15);
+    border-radius:20px;padding:24px;width:300px;
+    display:flex;flex-direction:column;align-items:center;gap:16px;
+  }
+  .modal-title{color:rgba(255,255,255,.8);font-size:14px;text-align:center}
+  .modal-records{display:flex;flex-direction:column;gap:8px;width:100%}
+  .modal-record{
+    display:flex;align-items:center;gap:12px;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+    border-radius:12px;padding:10px 14px;cursor:pointer;transition:background .2s;
+  }
+  .modal-record:hover{background:rgba(255,255,255,.15)}
+  .modal-swatch{width:20px;height:20px;border-radius:50%;flex-shrink:0}
+  .modal-emotion{color:#fff;font-size:13px}
+  .modal-cancel{
+    padding:8px 24px;border:1px solid rgba(255,255,255,.2);border-radius:18px;
+    background:transparent;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;transition:all .2s
+  }
+  .modal-cancel:hover{background:rgba(255,255,255,.08);color:#fff}
 </style>
 </head>
 <body>
@@ -125,18 +149,18 @@
 </div>
 
 <div class="emotion-buttons">
-  <button class="emotion-btn" data-type="joy">喜び</button>
-  <button class="emotion-btn" data-type="joy">期待</button>
-  <button class="emotion-btn" data-type="calm">信頼</button>
-  <button class="emotion-btn" data-type="joy">驚き</button>
-  <button class="emotion-btn" data-type="sad">悲しみ</button>
-  <button class="emotion-btn" data-type="sad">嫌悪</button>
-  <button class="emotion-btn" data-type="angry">怒り</button>
-  <button class="emotion-btn" data-type="angry">恐れ</button>
+  <button class="emotion-btn" data-emotion="喜び" data-type="joy">喜び</button>
+  <button class="emotion-btn" data-emotion="期待" data-type="joy">期待</button>
+  <button class="emotion-btn" data-emotion="信頼" data-type="calm">信頼</button>
+  <button class="emotion-btn" data-emotion="驚き" data-type="joy">驚き</button>
+  <button class="emotion-btn" data-emotion="悲しみ" data-type="sad">悲しみ</button>
+  <button class="emotion-btn" data-emotion="嫌悪" data-type="sad">嫌悪</button>
+  <button class="emotion-btn" data-emotion="怒り" data-type="angry">怒り</button>
+  <button class="emotion-btn" data-emotion="恐れ" data-type="angry">恐れ</button>
 </div>
 
 <div class="color-panel" id="colorPanel">
-  <canvas id="colorCanvas" width="540" height="260"></canvas>
+  <canvas id="colorCanvas" width="520" height="240"></canvas>
   <div class="selected-color">
     <div class="color-swatch" id="colorSwatch"></div>
     <span class="color-code" id="colorCode">#888888</span>
@@ -144,67 +168,141 @@
   <button class="apply-btn" id="applyBtn">この色を入れる</button>
 </div>
 
-<script>
-const blob = document.getElementById('blob');
-const colorPanel = document.getElementById('colorPanel');
-const canvas = document.getElementById('colorCanvas');
-const ctx = canvas.getContext('2d');
-const swatch = document.getElementById('colorSwatch');
-const codeEl = document.getElementById('colorCode');
-const applyBtn = document.getElementById('applyBtn');
-let selectedColor = '#888888';
+<div class="records" id="records"></div>
 
-function drawPanel() {
-  const w = canvas.width, h = canvas.height;
-  for (let x = 0; x < w; x++) {
-    const hue = (x / w) * 360;
-    const grad = ctx.createLinearGradient(0, 0, 0, h);
-    grad.addColorStop(0, `hsl(${hue},100%,95%)`);
-    grad.addColorStop(0.5, `hsl(${hue},100%,50%)`);
-    grad.addColorStop(1, `hsl(${hue},100%,10%)`);
-    ctx.fillStyle = grad;
-    ctx.fillRect(x, 0, 1, h);
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <p class="modal-title">どれを変えますか？</p>
+    <div class="modal-records" id="modalRecords"></div>
+    <button class="modal-cancel" id="modalCancel">やめる</button>
+  </div>
+</div>
+
+<script>
+const blob=document.getElementById('blob');
+const colorPanel=document.getElementById('colorPanel');
+const canvas=document.getElementById('colorCanvas');
+const ctx=canvas.getContext('2d');
+const swatch=document.getElementById('colorSwatch');
+const codeEl=document.getElementById('colorCode');
+const applyBtn=document.getElementById('applyBtn');
+const recordsEl=document.getElementById('records');
+const modalOverlay=document.getElementById('modalOverlay');
+const modalRecords=document.getElementById('modalRecords');
+const modalCancel=document.getElementById('modalCancel');
+let selectedColor='#888888';
+let selectedEmotion='';
+let selectedType='';
+let records=[];
+let pendingRecord=null;
+
+function drawPanel(){
+  const w=canvas.width,h=canvas.height;
+  for(let x=0;x<w;x++){
+    const hue=(x/w)*360;
+    const grad=ctx.createLinearGradient(0,0,0,h);
+    grad.addColorStop(0,`hsl(${hue},100%,95%)`);
+    grad.addColorStop(0.5,`hsl(${hue},100%,50%)`);
+    grad.addColorStop(1,`hsl(${hue},100%,10%)`);
+    ctx.fillStyle=grad;
+    ctx.fillRect(x,0,1,h);
   }
-  const wg = ctx.createLinearGradient(0,0,w*0.3,0);
+  const wg=ctx.createLinearGradient(0,0,w*0.3,0);
   wg.addColorStop(0,'rgba(255,255,255,0.85)');
   wg.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.fillStyle = wg;
+  ctx.fillStyle=wg;
   ctx.fillRect(0,0,w,h);
 }
 drawPanel();
 
-canvas.addEventListener('click', e => {
-  const r = canvas.getBoundingClientRect();
-  const x = (e.clientX - r.left) * (canvas.width / r.width);
-  const y = (e.clientY - r.top) * (canvas.height / r.height);
-  const p = ctx.getImageData(x, y, 1, 1).data;
-  selectedColor = `#${p[0].toString(16).padStart(2,'0')}${p[1].toString(16).padStart(2,'0')}${p[2].toString(16).padStart(2,'0')}`;
-  swatch.style.background = selectedColor;
-  codeEl.textContent = selectedColor.toUpperCase();
+canvas.addEventListener('click',e=>{
+  const r=canvas.getBoundingClientRect();
+  const x=(e.clientX-r.left)*(canvas.width/r.width);
+  const y=(e.clientY-r.top)*(canvas.height/r.height);
+  const p=ctx.getImageData(x,y,1,1).data;
+  selectedColor=`#${p[0].toString(16).padStart(2,'0')}${p[1].toString(16).padStart(2,'0')}${p[2].toString(16).padStart(2,'0')}`;
+  swatch.style.background=selectedColor;
+  codeEl.textContent=selectedColor.toUpperCase();
 });
 
-document.querySelectorAll('.emotion-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('active'));
+document.querySelectorAll('.emotion-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.emotion-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    blob.className = 'blob ' + btn.dataset.type;
+    selectedEmotion=btn.dataset.emotion;
+    selectedType=btn.dataset.type;
+    blob.className='blob '+selectedType;
     colorPanel.classList.add('visible');
   });
 });
 
-applyBtn.addEventListener('click', () => {
-  if (selectedColor === '#888888') return;
-  const r = parseInt(selectedColor.slice(1,3),16);
-  const g = parseInt(selectedColor.slice(3,5),16);
-  const b = parseInt(selectedColor.slice(5,7),16);
-  const grad = document.getElementById('blobBody');
-  const c = (rv,gv,bv) => `rgb(${Math.min(rv,255)},${Math.min(gv,255)},${Math.min(bv,255)})`;
-  grad.children[0].setAttribute('stop-color', c(r+60,g+60,b+60));
-  grad.children[1].setAttribute('stop-color', c(r+30,g+30,b+30));
-  grad.children[2].setAttribute('stop-color', selectedColor);
-  grad.children[3].setAttribute('stop-color', `rgb(${Math.max(r-30,0)},${Math.max(g-30,0)},${Math.max(b-30,0)})`);
+function applyColorToBlob(color){
+  const r=parseInt(color.slice(1,3),16);
+  const g=parseInt(color.slice(3,5),16);
+  const b=parseInt(color.slice(5,7),16);
+  const grad=document.getElementById('blobBody');
+  const c=(rv,gv,bv)=>`rgb(${Math.min(rv,255)},${Math.min(gv,255)},${Math.min(bv,255)})`;
+  grad.children[0].setAttribute('stop-color',c(r+60,g+60,b+60));
+  grad.children[1].setAttribute('stop-color',c(r+30,g+30,b+30));
+  grad.children[2].setAttribute('stop-color',color);
+  grad.children[3].setAttribute('stop-color',`rgb(${Math.max(r-30,0)},${Math.max(g-30,0)},${Math.max(b-30,0)})`);
+}
+
+function renderRecords(){
+  recordsEl.innerHTML='';
+  records.forEach(rec=>{
+    const el=document.createElement('div');
+    el.className='record-item';
+    el.innerHTML=`<div class="record-swatch" style="background:${rec.color}"></div><span class="record-emotion">${rec.emotion}</span><span class="record-code">${rec.color.toUpperCase()}</span>`;
+    recordsEl.appendChild(el);
+  });
+}
+
+function addRecord(emotion,color,type){
+  const rec={emotion,color,type};
+  if(records.length<3){
+    records.push(rec);
+    applyColorToBlob(color);
+    renderRecords();
+  } else {
+    pendingRecord=rec;
+    showModal();
+  }
+}
+
+function showModal(){
+  modalRecords.innerHTML='';
+  records.forEach((rec,i)=>{
+    const el=document.createElement('div');
+    el.className='modal-record';
+    el.innerHTML=`<div class="modal-swatch" style="background:${rec.color}"></div><span class="modal-emotion">${rec.emotion}　${rec.color.toUpperCase()}</span>`;
+    el.addEventListener('click',()=>{
+      records[i]=pendingRecord;
+      pendingRecord=null;
+      applyColorToBlob(records[i].color);
+      renderRecords();
+      hideModal();
+    });
+    modalRecords.appendChild(el);
+  });
+  modalOverlay.classList.add('visible');
+}
+
+function hideModal(){
+  modalOverlay.classList.remove('visible');
+  pendingRecord=null;
+}
+
+modalCancel.addEventListener('click',hideModal);
+
+applyBtn.addEventListener('click',()=>{
+  if(selectedColor==='#888888'||!selectedEmotion)return;
+  addRecord(selectedEmotion,selectedColor,selectedType);
   colorPanel.classList.remove('visible');
-  document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.emotion-btn').forEach(b=>b.classList.remove('active'));
+  selectedColor='#888888';
+  swatch.style.background='#888';
+  codeEl.textContent='#888888';
 });
 </script>
 </body>
