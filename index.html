@@ -7,10 +7,14 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
   body {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
+    width: 100vw;
+    height: 100vh;
     background: radial-gradient(ellipse at center, #0d4a5a 0%, #072838 55%, #041820 100%);
     display: flex;
     flex-direction: column;
@@ -19,6 +23,8 @@
     font-family: 'Hiragino Sans', sans-serif;
     overflow: hidden;
     gap: 0;
+    /* iOS Safari対応 */
+    min-height: -webkit-fill-available;
   }
 
   /* ── 球体 ── */
@@ -455,30 +461,61 @@ document.getElementById('moreBtn').addEventListener('click',()=>{
 
 function updateColorIslands() {
   colorIslands.innerHTML='';
-  document.querySelectorAll('[id^="igr"],[id^="iblur"]').forEach(e=>e.remove());
+  document.querySelectorAll('[id^="igr"]').forEach(e=>e.remove());
   const activeRecs = records.filter(r=>r.percent>0);
   if(activeRecs.length===0) return;
-  const cx=100,cy=104,R=69;
+  const cx=100, cy=104, R=69;
   const defs = document.querySelector('#blobSvg defs');
   const n = activeRecs.length;
-  const scale = n===1?1.0:n===2?1.42:1.72;
-  const radii = activeRecs.map(rec=>R*Math.sqrt(rec.percent/100)*scale);
-  let positions=[];
-  if(n===1){positions=[{x:cx,y:cy}];}
-  else if(n===2){positions=[{x:cx-radii[0]*0.5,y:cy},{x:cx+radii[1]*0.5,y:cy}];}
-  else if(n===3){
-    positions=[
-      {x:cx-radii[0]*0.42,y:cy-radii[0]*0.28},
-      {x:cx+radii[1]*0.42,y:cy-radii[1]*0.28},
-      {x:cx,y:cy+radii[2]*0.52}
-    ];
+
+  // %に応じた半径（球体面積を%で分割）
+  const radii = activeRecs.map(rec => Math.max(8, R * Math.sqrt(rec.percent/100) * 0.88));
+
+  // 重なりを30%以下に：2つの円が接触する距離 = r0+r1、重なり30%以下 = 距離 >= r0+r1-(min(r0,r1)*0.3)
+  // つまり中心間距離 = r0 + r1 - overlap、overlapは小さい方の半径の30%まで
+  function getPositions(radii) {
+    const n = radii.length;
+    if(n===1) return [{x:cx, y:cy}];
+    if(n===2) {
+      const r0=radii[0], r1=radii[1];
+      const overlap = Math.min(r0,r1) * 0.28; // 28%重なり
+      const dist = r0 + r1 - overlap;
+      return [
+        {x: cx - dist * (r1/(r0+r1)), y: cy},
+        {x: cx + dist * (r0/(r0+r1)), y: cy}
+      ];
+    }
+    if(n===3) {
+      const r0=radii[0], r1=radii[1], r2=radii[2];
+      const ov01 = Math.min(r0,r1)*0.28;
+      const ov02 = Math.min(r0,r2)*0.28;
+      const ov12 = Math.min(r1,r2)*0.28;
+      const d01 = r0+r1-ov01;
+      const d02 = r0+r2-ov02;
+      const d12 = r1+r2-ov12;
+      // 三角形配置
+      const x0 = cx - d01*0.5;
+      const x1 = cx + d01*0.5;
+      const y01 = cy - r0*0.15;
+      // 3番目は下
+      const y2 = cy + r2*0.7;
+      return [
+        {x: x0, y: y01},
+        {x: x1, y: y01},
+        {x: cx, y: y2}
+      ];
+    }
+    return [{x:cx,y:cy}];
   }
+
+  const positions = getPositions(radii);
+
   activeRecs.forEach((rec,i)=>{
     const r=radii[i]; const pos=positions[i];
     const gid=`igr${i}`;
     const grad=document.createElementNS('http://www.w3.org/2000/svg','radialGradient');
     grad.setAttribute('id',gid);grad.setAttribute('cx','36%');grad.setAttribute('cy','32%');grad.setAttribute('r','68%');
-    [[0,'#ffffff',0.5],[18,rec.color,0.97],[100,rec.color,0.85]].forEach(([pct,color,opacity])=>{
+    [[0,'#ffffff',0.5],[18,rec.color,0.95],[100,rec.color,0.82]].forEach(([pct,color,opacity])=>{
       const s=document.createElementNS('http://www.w3.org/2000/svg','stop');
       s.setAttribute('offset',pct+'%');s.setAttribute('stop-color',color);s.setAttribute('stop-opacity',opacity);
       grad.appendChild(s);
@@ -497,24 +534,33 @@ function updateEmotionLabels() {
   labelsEl.innerHTML='';
   const activeRecs = records.filter(r=>r.percent>0);
   if(activeRecs.length===0) return;
-  const n=activeRecs.length;
-  const scale=n===1?1.0:n===2?1.42:1.72;
   const R=69;
-  const radii=activeRecs.map(rec=>R*Math.sqrt(rec.percent/100)*scale);
-  let positions=[];
-  if(n===1){positions=[{x:100,y:108}];}
-  else if(n===2){positions=[{x:100-radii[0]*0.5,y:108},{x:100+radii[1]*0.5,y:108}];}
-  else{
-    positions=[
-      {x:100-radii[0]*0.42,y:104-radii[0]*0.28+4},
-      {x:100+radii[1]*0.42,y:104-radii[1]*0.28+4},
-      {x:100,y:104+radii[2]*0.52+4}
-    ];
+  const cx=100, cy=104;
+  const n=activeRecs.length;
+  const radii=activeRecs.map(rec=>Math.max(8, R*Math.sqrt(rec.percent/100)*0.88));
+
+  function getPositions(radii) {
+    const n=radii.length;
+    if(n===1) return [{x:cx,y:cy}];
+    if(n===2){
+      const r0=radii[0],r1=radii[1];
+      const overlap=Math.min(r0,r1)*0.28;
+      const dist=r0+r1-overlap;
+      return [{x:cx-dist*(r1/(r0+r1)),y:cy},{x:cx+dist*(r0/(r0+r1)),y:cy}];
+    }
+    if(n===3){
+      const r0=radii[0],r1=radii[1],r2=radii[2];
+      const d01=r0+r1-Math.min(r0,r1)*0.28;
+      return [{x:cx-d01*0.5,y:cy-r0*0.15},{x:cx+d01*0.5,y:cy-r1*0.15},{x:cx,y:cy+r2*0.7}];
+    }
+    return [{x:cx,y:cy}];
   }
+
+  const positions=getPositions(radii);
   activeRecs.forEach((rec,i)=>{
     const pos=positions[i];
     const text=document.createElementNS('http://www.w3.org/2000/svg','text');
-    text.setAttribute('x',pos.x);text.setAttribute('y',pos.y);
+    text.setAttribute('x',pos.x);text.setAttribute('y',pos.y+4);
     text.setAttribute('text-anchor','middle');text.setAttribute('font-size','10');
     text.setAttribute('font-weight','bold');
     const textColor=isLight(rec.color)?'#333333':'#ffffff';
