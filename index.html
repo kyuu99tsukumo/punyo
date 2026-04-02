@@ -203,9 +203,135 @@
     background:transparent;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;
   }
   .modal-cancel:hover{background:rgba(255,255,255,.08);color:#fff}
+
+  /* ── タブ ── */
+  .tab-bar {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    display: flex;
+    background: rgba(4,24,32,0.95);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    z-index: 50;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 0 14px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    font-family: 'Hiragino Sans', sans-serif;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    transition: color .2s;
+  }
+  .tab-btn.active { color: #40D8B0; }
+  .tab-btn .tab-icon { font-size: 18px; }
+
+  /* ── 各画面 ── */
+  .screen { display: none; width: 100%; padding-bottom: 60px; }
+  .screen.active { display: block; }
+
+  /* ── このツールについて ── */
+  .about-screen {
+    padding: 20px 10vw 80px;
+    color: rgba(255,255,255,0.85);
+    overflow-y: auto;
+    height: 100vh;
+  }
+  .about-screen h2 {
+    color: #40D8B0;
+    font-size: 18px;
+    margin: 24px 0 10px;
+    font-weight: bold;
+  }
+  .about-screen p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 8px;
+  }
+  .about-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin: 20px 0;
+  }
+
+  /* ── 過去の記録 ── */
+  .history-screen {
+    padding: 20px 10vw 80px;
+    overflow-y: auto;
+    height: 100vh;
+  }
+  .history-screen h2 {
+    color: #40D8B0;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  .history-empty {
+    color: rgba(255,255,255,0.35);
+    font-size: 14px;
+    text-align: center;
+    margin-top: 60px;
+  }
+  .history-day {
+    margin-bottom: 20px;
+  }
+  .history-date {
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    margin-bottom: 8px;
+    letter-spacing: .05em;
+  }
+  .history-records {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .history-record {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    padding: 8px 12px;
+    min-width: 72px;
+  }
+  .history-swatch {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,.3);
+  }
+  .history-emotion { color: rgba(255,255,255,.8); font-size: 13px; }
+  .history-pct { color: rgba(255,255,255,.5); font-size: 12px; }
 </style>
 </head>
 <body>
+
+<!-- タブバー -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('tool')">
+    <span class="tab-icon">🫧</span>
+    <span>今日</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('about')">
+    <span class="tab-icon">📖</span>
+    <span>このツールについて</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('history')">
+    <span class="tab-icon">🗓</span>
+    <span>過去の記録</span>
+  </button>
+</div>
+
+<!-- ツール画面 -->
+<div class="screen active" id="screen-tool">
 
 <!-- 球体 -->
 <div class="blob" id="blob">
@@ -288,11 +414,39 @@
   </div>
   <span class="percent-remain" id="percentRemain">残り 100%</span>
 
-  <button class="apply-btn" id="applyBtn">言葉と色の両方を選ぶと入ります</button>
+  <button class="apply-btn" id="applyBtn">言葉＋色を入れる。</button>
 </div>
 
 <!-- 記録エリア（高さ固定・常にここにある） -->
 <div class="records-area" id="records"></div>
+
+</div><!-- /screen-tool -->
+
+<!-- このツールについて画面 -->
+<div class="screen" id="screen-about">
+<div class="about-screen">
+  <h2>概要</h2>
+  <p>透明なぷにょ球体が、あなたの心の分身。言葉と色を入れると、球体が変化する。</p>
+  <hr class="about-divider">
+  <h2>使い方</h2>
+  <p>感情の言葉を選び、カラーパネルで「自分にとってのその色」を直感で選ぶ。割合（%）も自分の感覚で決めてOK。3つまで記録できます。正解はありません。</p>
+  <hr class="about-divider">
+  <h2>開発背景</h2>
+  <p>ウェルビーイングは、他者が測れるものではありません。自分の納得感こそが重要です。</p>
+  <p>感情処理と言語化の回路のつながりが薄い人、特に「今日どうだった？」と聞かれて「別に」で終わらせてしまう人は多い。それは弱さではなく、脳の仕様です。</p>
+  <p>測るのではなく、表現する。</p>
+  <hr class="about-divider">
+  <p style="color:rgba(255,255,255,0.35);font-size:13px;">Proto's out 2026.4.2</p>
+</div>
+</div><!-- /screen-about -->
+
+<!-- 過去の記録画面 -->
+<div class="screen" id="screen-history">
+<div class="history-screen">
+  <h2>過去の記録</h2>
+  <div id="historyContent"></div>
+</div>
+</div><!-- /screen-history -->
 
 <!-- モーダル -->
 <div class="modal-overlay" id="modalOverlay">
@@ -406,7 +560,7 @@ function checkReady() {
     applyBtn.textContent = '入れる';
   } else {
     applyBtn.className = 'apply-btn';
-    applyBtn.textContent = '言葉と色の両方を選ぶと入ります';
+    applyBtn.textContent = '言葉＋色を入れる。';
   }
 }
 
@@ -645,6 +799,70 @@ applyBtn.addEventListener('click',()=>{
 });
 
 updateSliderMax();checkReady();
+
+// ── タブ切り替え ──
+function switchTab(tab) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+tab).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    if(['tool','about','history'][i]===tab) b.classList.add('active');
+  });
+  if(tab==='history') renderHistory();
+}
+
+// ── 記録の永続化（localStorage） ──
+const STORAGE_KEY = 'punyo_history';
+
+function getTodayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function saveToHistory() {
+  if(records.length===0) return;
+  try {
+    const history = JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+    history[getTodayKey()] = records;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+  } catch(e){}
+}
+
+// addRecordの後に保存を呼ぶ
+const _origAddRecord = addRecord;
+
+function renderHistory() {
+  const content = document.getElementById('historyContent');
+  try {
+    const history = JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+    const keys = Object.keys(history).sort().reverse();
+    if(keys.length===0){
+      content.innerHTML='<p class="history-empty">まだ記録がありません</p>';
+      return;
+    }
+    content.innerHTML = keys.map(dateKey=>{
+      const recs = history[dateKey];
+      const cards = recs.map(r=>`
+        <div class="history-record">
+          <div class="history-swatch" style="background:${r.color}"></div>
+          <span class="history-emotion">${r.emotion}</span>
+          <span class="history-pct">${r.percent}%</span>
+        </div>`).join('');
+      const d = new Date(dateKey);
+      const label = `${d.getMonth()+1}月${d.getDate()}日`;
+      return `<div class="history-day">
+        <div class="history-date">${label}</div>
+        <div class="history-records">${cards}</div>
+      </div>`;
+    }).join('');
+  } catch(e){
+    content.innerHTML='<p class="history-empty">記録を読み込めませんでした</p>';
+  }
+}
+
+// 記録追加のたびにlocalStorageに保存
+const origApply = applyBtn.onclick;
+applyBtn.addEventListener('click', ()=>{ setTimeout(saveToHistory, 100); });
 </script>
 </body>
 </html>
