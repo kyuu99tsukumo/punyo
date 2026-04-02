@@ -15,7 +15,7 @@
     overflow: hidden; gap: 14px;
   }
 
-  .blob { width: 300px; height: 300px; animation: punya 3.2s ease-in-out infinite; position: relative; }
+  .blob { width: 220px; height: 220px; animation: punya 3.2s ease-in-out infinite; position: relative; }
   @keyframes punya {
     0%{transform:scale(1,1)} 22%{transform:scale(1.07,0.93)}
     48%{transform:scale(0.94,1.08)} 72%{transform:scale(1.05,0.96)} 100%{transform:scale(1,1)}
@@ -45,13 +45,13 @@
   .hl-drift{animation:hl-drift 3.8s ease-in-out infinite}
   .outer-pulse{animation:outer-pulse 3.2s ease-in-out infinite}
 
-  .input-area { display:flex; flex-direction:column; align-items:center; gap:14px; width:92vw; max-width:500px; }
+  .input-area { display:flex; flex-direction:column; align-items:center; gap:8px; width:92vw; max-width:440px; }
 
-  .emotion-buttons { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; width:100%; }
+  .emotion-buttons { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; width:100%; }
   .emotion-btn {
-    padding:11px 0; border:1px solid rgba(255,255,255,0.2);
-    border-radius:20px; background:rgba(255,255,255,0.06);
-    color:rgba(255,255,255,0.7); font-size:16px;
+    padding:9px 0; border:1px solid rgba(255,255,255,0.2);
+    border-radius:18px; background:rgba(255,255,255,0.06);
+    color:rgba(255,255,255,0.7); font-size:15px;
     cursor:pointer; transition:all .2s ease; text-align:center;
   }
   .emotion-btn:hover:not(:disabled){background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.4)}
@@ -60,18 +60,18 @@
   .emotion-btn.hidden{display:none}
   .more-btn{
     background:none;border:none;color:rgba(255,255,255,.45);
-    font-size:15px;cursor:pointer;padding:4px 0;
+    font-size:14px;cursor:pointer;padding:2px 0;
     transition:color .2s;letter-spacing:.05em;
   }
   .more-btn:hover{color:rgba(255,255,255,.8)}
 
-  #colorCanvas{width:100%;height:140px;border-radius:8px;cursor:crosshair;border:1px solid rgba(255,255,255,.15);display:block;}
+  #colorCanvas{width:100%;height:115px;border-radius:8px;cursor:crosshair;border:1px solid rgba(255,255,255,.15);display:block;}
   .selected-color{display:flex;align-items:center;gap:8px}
-  .color-swatch{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:#888;flex-shrink:0}
-  .color-code{color:rgba(255,255,255,.5);font-size:15px;letter-spacing:.1em}
+  .color-swatch{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:#888;flex-shrink:0}
+  .color-code{color:rgba(255,255,255,.5);font-size:14px;letter-spacing:.1em}
 
   .percent-row { display:flex; align-items:center; gap:8px; width:100%; }
-  .percent-label { color:rgba(255,255,255,.5); font-size:15px; white-space:nowrap; }
+  .percent-label { color:rgba(255,255,255,.5); font-size:14px; white-space:nowrap; }
   .percent-slider {
     flex:1; -webkit-appearance:none; height:3px;
     border-radius:2px; background:rgba(255,255,255,.2); outline:none;
@@ -80,31 +80,31 @@
     -webkit-appearance:none; width:14px; height:14px;
     border-radius:50%; background:rgba(255,255,255,.8); cursor:pointer;
   }
-  .percent-value { color:#fff; font-size:18px; font-weight:bold; width:52px; text-align:right; }
-  .percent-remain { color:rgba(255,255,255,.4); font-size:14px; text-align:center; }
+  .percent-value { color:#fff; font-size:16px; font-weight:bold; width:48px; text-align:right; }
+  .percent-remain { color:rgba(255,255,255,.4); font-size:13px; text-align:center; }
 
   .apply-btn {
-    padding:14px 28px; border:none; border-radius:24px;
-    background:rgba(255,255,255,.08); color:rgba(255,255,255,.4); font-size:17px;
+    padding:11px 28px; border:none; border-radius:22px;
+    background:rgba(255,255,255,.08); color:rgba(255,255,255,.4); font-size:16px;
     cursor:not-allowed; transition:all .2s; width:100%;
   }
   .apply-btn.ready { background:rgba(255,255,255,.18); color:#fff; cursor:pointer; }
   .apply-btn.ready:hover{background:rgba(255,255,255,.28)}
 
-  .records{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;}
+  .records{display:flex;gap:8px;align-items:center;min-height:52px}
   .record-item{
-    display:flex;flex-direction:column;align-items:center;gap:5px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
     background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-    border-radius:16px;padding:10px 16px;min-width:88px;
+    border-radius:12px;padding:7px 10px;min-width:72px;
     cursor:pointer;transition:all .2s;
   }
   .record-item:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3)}
   .record-item.editing{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.18)}
-  .record-swatch{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3)}
-  .record-emotion{color:rgba(255,255,255,.8);font-size:15px}
-  .record-pct{color:rgba(255,255,255,.5);font-size:14px}
-  .record-code{color:rgba(255,255,255,.35);font-size:11px;letter-spacing:.05em}
-  .record-edit{color:rgba(255,255,255,.35);font-size:12px}
+  .record-swatch{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3)}
+  .record-emotion{color:rgba(255,255,255,.8);font-size:14px}
+  .record-pct{color:rgba(255,255,255,.5);font-size:13px}
+  .record-code{color:rgba(255,255,255,.35);font-size:9px;letter-spacing:.05em}
+  .record-edit{color:rgba(255,255,255,.35);font-size:9px}
 
   .modal-overlay{
     display:none;position:fixed;inset:0;
@@ -638,7 +638,7 @@ function updateEmotionLabels() {
     text.setAttribute('x', pos.x);
     text.setAttribute('y', pos.y);
     text.setAttribute('text-anchor', 'middle');
-    text.setAttribute('font-size', '11');
+    text.setAttribute('font-size', '10');
     text.setAttribute('font-weight', 'bold');
     const textColor = isLight(rec.color) ? '#333333' : '#ffffff';
     text.setAttribute('fill', textColor);
