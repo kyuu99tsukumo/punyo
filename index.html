@@ -45,7 +45,7 @@
   .hl-drift{animation:hl-drift 3.8s ease-in-out infinite}
   .outer-pulse{animation:outer-pulse 3.2s ease-in-out infinite}
 
-  .input-area { display:flex; flex-direction:column; align-items:center; gap:8px; width:92vw; max-width:440px; }
+  .input-area { display:flex; flex-direction:column; align-items:center; gap:8px; width:83vw; max-width:400px; }
 
   .emotion-buttons { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; width:100%; }
   .emotion-btn {
@@ -66,7 +66,7 @@
   .more-btn:hover{color:rgba(255,255,255,.8)}
 
   #colorCanvas{width:100%;height:115px;border-radius:8px;cursor:crosshair;border:1px solid rgba(255,255,255,.15);display:block;}
-  .selected-color{display:flex;align-items:center;gap:8px}
+  .selected-color{display:flex;align-items:center;gap:8px;min-height:32px}
   .color-swatch{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:#888;flex-shrink:0}
   .color-code{color:rgba(255,255,255,.5);font-size:14px;letter-spacing:.1em}
 
@@ -349,17 +349,25 @@ function updateButtons() {
   });
 }
 
-canvas.addEventListener('click', e => {
+function pickColor(e) {
   const r = canvas.getBoundingClientRect();
-  const x = (e.clientX - r.left) * (canvas.width / r.width);
-  const y = (e.clientY - r.top) * (canvas.height / r.height);
-  const p = ctx.getImageData(x, y, 1, 1).data;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const x = (clientX - r.left) * (canvas.width / r.width);
+  const y = (clientY - r.top) * (canvas.height / r.height);
+  const p = ctx.getImageData(
+    Math.max(0, Math.min(canvas.width-1, Math.round(x))),
+    Math.max(0, Math.min(canvas.height-1, Math.round(y))),
+    1, 1).data;
   selectedColor = `#${p[0].toString(16).padStart(2,'0')}${p[1].toString(16).padStart(2,'0')}${p[2].toString(16).padStart(2,'0')}`;
   swatch.style.background = selectedColor;
   codeEl.textContent = selectedColor.toUpperCase();
   updateActiveBtn();
   checkReady();
-});
+}
+canvas.addEventListener('click', pickColor);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); pickColor(e); }, { passive: false });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); pickColor(e); }, { passive: false });
 
 document.querySelectorAll('.emotion-btn').forEach(btn => {
   btn.addEventListener('click', () => {
