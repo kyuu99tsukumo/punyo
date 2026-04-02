@@ -58,13 +58,6 @@
   .emotion-btn.active{color:#fff;border-color:rgba(255,255,255,.4);font-weight:bold}
   .emotion-btn:disabled{opacity:0.4;cursor:not-allowed}
   .emotion-btn.hidden{display:none}
-  .more-btn{
-    background:none;border:none;color:rgba(255,255,255,.45);
-    font-size:12px;cursor:pointer;padding:2px 0;
-    transition:color .2s;letter-spacing:.05em;
-  }
-  .more-btn:hover{color:rgba(255,255,255,.8)}
-  .more-emotions{margin-top:0;}
 
   #colorCanvas{width:100%;height:100px;border-radius:8px;cursor:crosshair;border:1px solid rgba(255,255,255,.15);display:block;}
   .selected-color{display:flex;align-items:center;gap:8px}
@@ -184,32 +177,21 @@
     <ellipse class="hl-drift" cx="73" cy="62" rx="20" ry="13" fill="url(#mainHL)"/>
     <ellipse class="hl-drift" cx="60" cy="54" rx="7" ry="4.5" fill="white" fill-opacity=".95"/>
     <ellipse cx="55" cy="50" rx="2.5" ry="1.8" fill="white" fill-opacity="1"/>
+    <g id="emotionLabels"></g>
     <ellipse cx="118" cy="142" rx="24" ry="12" fill="url(#bottomRef)" filter="url(#tinyBlur)"/>
   </svg>
 </div>
 
 <div class="input-area">
   <div class="emotion-buttons" id="emotionButtons">
-    <button class="emotion-btn" data-emotion="嬉しい" data-type="joy">嬉しい</button>
-    <button class="emotion-btn" data-emotion="楽しい" data-type="joy">楽しい</button>
-    <button class="emotion-btn" data-emotion="好き" data-type="joy">好き</button>
-    <button class="emotion-btn" data-emotion="穏やか" data-type="calm">穏やか</button>
-    <button class="emotion-btn" data-emotion="悲しい" data-type="sad">悲しい</button>
-    <button class="emotion-btn" data-emotion="イライラ" data-type="angry">イライラ</button>
-    <button class="emotion-btn" data-emotion="不安" data-type="angry">不安</button>
-    <button class="emotion-btn" data-emotion="疲れた" data-type="sad">疲れた</button>
-  </div>
-  <button class="more-btn" id="moreBtn">もっと見る ▾</button>
-  <div class="emotion-buttons more-emotions" id="moreEmotions" style="display:none;">
+    <button class="emotion-btn" data-emotion="喜び" data-type="joy">喜び</button>
+    <button class="emotion-btn" data-emotion="期待" data-type="joy">期待</button>
+    <button class="emotion-btn" data-emotion="信頼" data-type="calm">信頼</button>
+    <button class="emotion-btn" data-emotion="驚き" data-type="joy">驚き</button>
+    <button class="emotion-btn" data-emotion="悲しみ" data-type="sad">悲しみ</button>
+    <button class="emotion-btn" data-emotion="嫌悪" data-type="sad">嫌悪</button>
     <button class="emotion-btn" data-emotion="怒り" data-type="angry">怒り</button>
-    <button class="emotion-btn" data-emotion="モヤモヤ" data-type="sad">モヤモヤ</button>
-    <button class="emotion-btn" data-emotion="しんどい" data-type="sad">しんどい</button>
-    <button class="emotion-btn" data-emotion="嫌い" data-type="angry">嫌い</button>
-    <button class="emotion-btn" data-emotion="退屈" data-type="sad">退屈</button>
-    <button class="emotion-btn" data-emotion="ワクワク" data-type="joy">ワクワク</button>
-    <button class="emotion-btn" data-emotion="ありがたい" data-type="calm">ありがたい</button>
-    <button class="emotion-btn" data-emotion="興味深い" data-type="calm">興味深い</button>
-    <button class="emotion-btn" data-emotion="スッキリ" data-type="joy">スッキリ</button>
+    <button class="emotion-btn" data-emotion="恐れ" data-type="angry">恐れ</button>
   </div>
 
   <canvas id="colorCanvas" width="580" height="200"></canvas>
@@ -530,11 +512,13 @@ function addRecord(emotion, color, type, percent) {
     }
     editingIndex = -1;
     updateColorIslands();
+    updateEmotionLabels();
     renderRecords();
     resetInput();
   } else if (records.length < 3) {
     records.push(rec);
     updateColorIslands();
+    updateEmotionLabels();
     renderRecords();
     resetInput();
   } else {
@@ -601,22 +585,39 @@ applyBtn.addEventListener('click', () => {
   addRecord(selectedEmotion, selectedColor, selectedType, selectedPercent);
 });
 
-// もっと見るボタン
-document.getElementById('moreBtn').addEventListener('click', () => {
-  const more = document.getElementById('moreEmotions');
-  const btn = document.getElementById('moreBtn');
-  if (more.style.display === 'none') {
-    more.style.display = 'grid';
-    btn.textContent = '閉じる ▴';
-  } else {
-    more.style.display = 'none';
-    btn.textContent = 'もっと見る ▾';
-  }
-});
-
 // 初期化
 updateSliderMax();
 checkReady();
+
+function updateEmotionLabels() {
+  const labelsEl = document.getElementById('emotionLabels');
+  if (!labelsEl) return;
+  labelsEl.innerHTML = '';
+  const activeRecs = records.filter(r => r.percent > 0);
+  if (activeRecs.length === 0) return;
+
+  const positions = [
+    { x: 90, y: 99 },
+    { x: 113, y: 112 },
+    { x: 88, y: 122 },
+  ];
+
+  activeRecs.forEach((rec, i) => {
+    const pos = positions[i] || { x: 100, y: 104 };
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', pos.x);
+    text.setAttribute('y', pos.y);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('font-size', '9');
+    text.setAttribute('font-weight', 'bold');
+    const textColor = isLight(rec.color) ? '#333333' : '#ffffff';
+    text.setAttribute('fill', textColor);
+    text.setAttribute('fill-opacity', '0.95');
+    text.setAttribute('style', 'font-family: Hiragino Sans, sans-serif;');
+    text.textContent = rec.emotion;
+    labelsEl.appendChild(text);
+  });
+}
 </script>
 </body>
 </html>
