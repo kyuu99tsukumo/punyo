@@ -117,8 +117,8 @@
     display:flex;align-items:center;gap:8px;
     min-height:30px;
   }
-  .color-swatch{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:#888;flex-shrink:0}
-  .color-code{color:rgba(255,255,255,.5);font-size:14px;letter-spacing:.1em}
+  .color-swatch{display:none}
+  .color-code{display:none}
 
   /* ── %スライダー ── */
   .percent-row{display:flex;align-items:center;gap:8px;width:100%}
@@ -279,10 +279,7 @@
   </div>
 
   <canvas id="colorCanvas" width="580" height="230"></canvas>
-  <div class="selected-color">
-    <div class="color-swatch" id="colorSwatch"></div>
-    <span class="color-code" id="colorCode">色を選んでください</span>
-  </div>
+
 
   <div class="percent-row">
     <span class="percent-label">割合</span>
@@ -291,7 +288,7 @@
   </div>
   <span class="percent-remain" id="percentRemain">残り 100%</span>
 
-  <button class="apply-btn" id="applyBtn">感情と色を両方選ぶと入れられます</button>
+  <button class="apply-btn" id="applyBtn">言葉と色の両方を選ぶと入ります</button>
 </div>
 
 <!-- 記録エリア（高さ固定・常にここにある） -->
@@ -361,7 +358,6 @@ function pickColor(e) {
     Math.max(0,Math.min(canvas.height-1,Math.round(y))),1,1).data;
   selectedColor = `#${p[0].toString(16).padStart(2,'0')}${p[1].toString(16).padStart(2,'0')}${p[2].toString(16).padStart(2,'0')}`;
   swatch.style.background = selectedColor;
-  codeEl.textContent = selectedColor.toUpperCase();
   updateActiveBtn();
   checkReady();
 }
@@ -410,7 +406,7 @@ function checkReady() {
     applyBtn.textContent = '入れる';
   } else {
     applyBtn.className = 'apply-btn';
-    applyBtn.textContent = '感情と色を両方選ぶと入れられます';
+    applyBtn.textContent = '言葉と色の両方を選ぶと入ります';
   }
 }
 
