@@ -2,20 +2,33 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>punyo</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
+    position: fixed;
+    top: 0; left: 0;
     width: 100vw; height: 100vh;
     background: radial-gradient(ellipse at center, #0d4a5a 0%, #072838 55%, #041820 100%);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
     font-family: 'Hiragino Sans', sans-serif;
-    overflow: hidden; gap: 14px;
+    overflow: hidden;
+    gap: 0;
   }
 
-  .blob { width: 220px; height: 220px; animation: punya 3.2s ease-in-out infinite; position: relative; }
+  /* ── 球体 ── */
+  .blob {
+    width: 220px;
+    height: 220px;
+    flex-shrink: 0;
+    margin-top: 12px;
+    animation: punya 3.2s ease-in-out infinite;
+  }
   @keyframes punya {
     0%{transform:scale(1,1)} 22%{transform:scale(1.07,0.93)}
     48%{transform:scale(0.94,1.08)} 72%{transform:scale(1.05,0.96)} 100%{transform:scale(1,1)}
@@ -28,7 +41,8 @@
     0%{transform:scale(1,1)} 30%{transform:scale(1.02,0.96)} 60%{transform:scale(0.98,1.03)} 100%{transform:scale(1,1)}
   }
   @keyframes punya-joy {
-    0%{transform:scale(1,1)} 25%{transform:scale(1.10,0.92)} 55%{transform:scale(0.92,1.10)} 100%{transform:scale(1,1)}
+    0%{transform:scale(1,1)} 25%{transform:scale(1.10,0.92)}
+    55%{transform:scale(0.92,1.10)} 80%{transform:scale(1.06,0.95)} 100%{transform:scale(1,1)}
   }
   .blob.angry{animation-name:punya-angry;animation-duration:1.8s}
   .blob.sad{animation-name:punya-sad;animation-duration:4.5s}
@@ -45,67 +59,116 @@
   .hl-drift{animation:hl-drift 3.8s ease-in-out infinite}
   .outer-pulse{animation:outer-pulse 3.2s ease-in-out infinite}
 
-  .input-area { display:flex; flex-direction:column; align-items:center; gap:8px; width:83vw; max-width:400px; }
+  /* ── 入力エリア（固定幅） ── */
+  .input-area {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 83vw;
+    max-width: 400px;
+    margin-top: 10px;
+  }
 
-  .emotion-buttons { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; width:100%; }
+  /* ── 感情ボタン ── */
+  .emotion-buttons {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 7px;
+    width: 100%;
+  }
   .emotion-btn {
-    padding:9px 0; border:1px solid rgba(255,255,255,0.2);
-    border-radius:18px; background:rgba(255,255,255,0.06);
-    color:rgba(255,255,255,0.7); font-size:15px;
-    cursor:pointer; transition:all .2s ease; text-align:center;
+    padding: 9px 0;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 18px;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.7);
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .2s ease;
+    text-align: center;
+    font-family: 'Hiragino Sans', sans-serif;
   }
   .emotion-btn:hover:not(:disabled){background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.4)}
   .emotion-btn.active{color:#fff;border-color:rgba(255,255,255,.4);font-weight:bold}
-  .emotion-btn:disabled{opacity:0.4;cursor:not-allowed}
   .emotion-btn.hidden{display:none}
+
   .more-btn{
     background:none;border:none;color:rgba(255,255,255,.45);
     font-size:14px;cursor:pointer;padding:2px 0;
-    transition:color .2s;letter-spacing:.05em;
+    font-family: 'Hiragino Sans', sans-serif;
   }
   .more-btn:hover{color:rgba(255,255,255,.8)}
 
-  #colorCanvas{width:100%;height:115px;border-radius:8px;cursor:crosshair;border:1px solid rgba(255,255,255,.15);display:block;}
-  .selected-color{display:flex;align-items:center;gap:8px;min-height:32px}
+  /* ── カラーパネル ── */
+  #colorCanvas{
+    width:100%;height:115px;border-radius:8px;
+    cursor:crosshair;border:1px solid rgba(255,255,255,.15);
+    display:block; touch-action: none;
+  }
+  .selected-color{
+    display:flex;align-items:center;gap:8px;
+    min-height:30px;
+  }
   .color-swatch{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:#888;flex-shrink:0}
   .color-code{color:rgba(255,255,255,.5);font-size:14px;letter-spacing:.1em}
 
-  .percent-row { display:flex; align-items:center; gap:8px; width:100%; }
-  .percent-label { color:rgba(255,255,255,.5); font-size:14px; white-space:nowrap; }
-  .percent-slider {
-    flex:1; -webkit-appearance:none; height:3px;
-    border-radius:2px; background:rgba(255,255,255,.2); outline:none;
+  /* ── %スライダー ── */
+  .percent-row{display:flex;align-items:center;gap:8px;width:100%}
+  .percent-label{color:rgba(255,255,255,.5);font-size:14px;white-space:nowrap}
+  .percent-slider{
+    flex:1;-webkit-appearance:none;height:3px;
+    border-radius:2px;background:rgba(255,255,255,.2);outline:none;
   }
-  .percent-slider::-webkit-slider-thumb {
-    -webkit-appearance:none; width:14px; height:14px;
-    border-radius:50%; background:rgba(255,255,255,.8); cursor:pointer;
+  .percent-slider::-webkit-slider-thumb{
+    -webkit-appearance:none;width:16px;height:16px;
+    border-radius:50%;background:rgba(255,255,255,.8);cursor:pointer;
   }
-  .percent-value { color:#fff; font-size:16px; font-weight:bold; width:48px; text-align:right; }
-  .percent-remain { color:rgba(255,255,255,.4); font-size:13px; text-align:center; }
+  .percent-value{color:#fff;font-size:16px;font-weight:bold;width:48px;text-align:right}
+  .percent-remain{color:rgba(255,255,255,.4);font-size:13px;text-align:center}
 
-  .apply-btn {
-    padding:11px 28px; border:none; border-radius:22px;
-    background:rgba(255,255,255,.08); color:rgba(255,255,255,.4); font-size:16px;
-    cursor:not-allowed; transition:all .2s; width:100%;
+  /* ── 入れるボタン ── */
+  .apply-btn{
+    padding:11px 28px;border:none;border-radius:22px;
+    background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);
+    font-size:16px;cursor:not-allowed;transition:all .2s;width:100%;
+    font-family: 'Hiragino Sans', sans-serif;
   }
-  .apply-btn.ready { background:rgba(255,255,255,.18); color:#fff; cursor:pointer; }
+  .apply-btn.ready{background:rgba(255,255,255,.18);color:#fff;cursor:pointer}
   .apply-btn.ready:hover{background:rgba(255,255,255,.28)}
 
-  .records{display:flex;gap:8px;align-items:center;min-height:52px}
+  /* ── 記録エリア（高さ固定・絶対位置） ── */
+  /* bodyの最後の子として常に同じ場所に */
+  .records-area {
+    flex-shrink: 0;
+    width: 83vw;
+    max-width: 400px;
+    min-height: 96px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 6px;
+    margin-top: 6px;
+  }
+
   .record-item{
-    display:flex;flex-direction:column;align-items:center;gap:3px;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
     background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-    border-radius:12px;padding:7px 10px;min-width:72px;
+    border-radius:14px;padding:8px 12px;min-width:80px;
     cursor:pointer;transition:all .2s;
   }
   .record-item:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3)}
   .record-item.editing{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.18)}
-  .record-swatch{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3)}
+  .record-swatch{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3)}
   .record-emotion{color:rgba(255,255,255,.8);font-size:14px}
   .record-pct{color:rgba(255,255,255,.5);font-size:13px}
-  .record-code{color:rgba(255,255,255,.35);font-size:9px;letter-spacing:.05em}
-  .record-edit{color:rgba(255,255,255,.35);font-size:9px}
+  .record-code{color:rgba(255,255,255,.35);font-size:10px;letter-spacing:.05em}
+  .record-edit{color:rgba(255,255,255,.3);font-size:10px}
 
+  /* ── モーダル ── */
   .modal-overlay{
     display:none;position:fixed;inset:0;
     background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
@@ -131,13 +194,14 @@
   .modal-pct{color:rgba(255,255,255,.5);font-size:11px}
   .modal-cancel{
     padding:7px 22px;border:1px solid rgba(255,255,255,.2);border-radius:16px;
-    background:transparent;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;transition:all .2s
+    background:transparent;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;
   }
   .modal-cancel:hover{background:rgba(255,255,255,.08);color:#fff}
 </style>
 </head>
 <body>
 
+<!-- 球体 -->
 <div class="blob" id="blob">
   <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" id="blobSvg">
     <defs>
@@ -147,12 +211,9 @@
         <stop offset="100%" stop-color="#40b8d8" stop-opacity="0"/>
       </radialGradient>
       <radialGradient id="blobBody" cx="38%" cy="32%" r="72%">
-        <stop offset="0%" stop-color="#e8f8ff" stop-opacity=".92"/>
-        <stop offset="22%" stop-color="#d0f0ff" stop-opacity=".72"/>
-        <stop offset="48%" stop-color="#a8e0f8" stop-opacity=".38"/>
-        <stop offset="72%" stop-color="#80c8e8" stop-opacity=".14"/>
-        <stop offset="88%" stop-color="#60b8d8" stop-opacity=".06"/>
-        <stop offset="100%" stop-color="#40a8c8" stop-opacity=".01"/>
+        <stop offset="0%" stop-color="#e8f8ff" stop-opacity=".08"/>
+        <stop offset="50%" stop-color="#c0eeff" stop-opacity=".04"/>
+        <stop offset="100%" stop-color="#a0d8ee" stop-opacity=".02"/>
       </radialGradient>
       <radialGradient id="innerLight" cx="36%" cy="28%" r="60%">
         <stop offset="0%" stop-color="#fff" stop-opacity=".85"/>
@@ -172,22 +233,21 @@
       </clipPath>
       <filter id="softBlur"><feGaussianBlur stdDeviation="7"/></filter>
       <filter id="tinyBlur"><feGaussianBlur stdDeviation="1.8"/></filter>
-      <filter id="blobBlur"><feGaussianBlur stdDeviation="8"/></filter>
     </defs>
     <ellipse class="outer-pulse" cx="100" cy="102" rx="88" ry="90" fill="url(#outerGlow)" filter="url(#softBlur)"/>
     <ellipse cx="100" cy="104" rx="72" ry="76" fill="url(#blobBody)"/>
-    <!-- 色の島（記録に応じて動的に生成） -->
     <g id="colorIslands" clip-path="url(#blobClip)"></g>
     <ellipse cx="100" cy="104" rx="72" ry="76" fill="none" stroke="#90d8f0" stroke-width=".7" stroke-opacity=".22"/>
     <ellipse class="inner-drift" cx="80" cy="74" rx="46" ry="36" fill="url(#innerLight)" filter="url(#tinyBlur)"/>
     <ellipse class="hl-drift" cx="73" cy="62" rx="20" ry="13" fill="url(#mainHL)"/>
     <ellipse class="hl-drift" cx="60" cy="54" rx="7" ry="4.5" fill="white" fill-opacity=".95"/>
     <ellipse cx="55" cy="50" rx="2.5" ry="1.8" fill="white" fill-opacity="1"/>
-    <g id="emotionLabels"></g>
     <ellipse cx="118" cy="142" rx="24" ry="12" fill="url(#bottomRef)" filter="url(#tinyBlur)"/>
+    <g id="emotionLabels"></g>
   </svg>
 </div>
 
+<!-- 入力エリア -->
 <div class="input-area">
   <div class="emotion-buttons" id="emotionButtons">
     <button class="emotion-btn" data-emotion="嬉しい" data-type="joy">嬉しい</button>
@@ -200,7 +260,7 @@
     <button class="emotion-btn" data-emotion="疲れた" data-type="sad">疲れた</button>
   </div>
   <button class="more-btn" id="moreBtn">もっと見る ▾</button>
-  <div class="emotion-buttons more-emotions" id="moreEmotions" style="display:none;">
+  <div class="emotion-buttons" id="moreEmotions" style="display:none;">
     <button class="emotion-btn" data-emotion="怒り" data-type="angry">怒り</button>
     <button class="emotion-btn" data-emotion="モヤモヤ" data-type="sad">モヤモヤ</button>
     <button class="emotion-btn" data-emotion="しんどい" data-type="sad">しんどい</button>
@@ -212,7 +272,7 @@
     <button class="emotion-btn" data-emotion="スッキリ" data-type="joy">スッキリ</button>
   </div>
 
-  <canvas id="colorCanvas" width="580" height="200"></canvas>
+  <canvas id="colorCanvas" width="580" height="230"></canvas>
   <div class="selected-color">
     <div class="color-swatch" id="colorSwatch"></div>
     <span class="color-code" id="colorCode">色を選んでください</span>
@@ -228,8 +288,10 @@
   <button class="apply-btn" id="applyBtn">感情と色を両方選ぶと入れられます</button>
 </div>
 
-<div class="records" id="records"></div>
+<!-- 記録エリア（高さ固定・常にここにある） -->
+<div class="records-area" id="records"></div>
 
+<!-- モーダル -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <p class="modal-title">どれを変えますか？</p>
@@ -260,32 +322,69 @@ let selectedType = null;
 let selectedPercent = 50;
 let records = [];
 let pendingRecord = null;
-let editingIndex = -1; // 編集中の記録インデックス
+let editingIndex = -1;
 
-// カラーパネル描画
+// カラーパネル
 function drawPanel() {
   const w = canvas.width, h = canvas.height;
   for (let x = 0; x < w; x++) {
     const hue = (x / w) * 360;
-    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    const grad = ctx.createLinearGradient(0,0,0,h);
     grad.addColorStop(0, `hsl(${hue},100%,95%)`);
     grad.addColorStop(0.5, `hsl(${hue},100%,50%)`);
     grad.addColorStop(1, `hsl(${hue},100%,10%)`);
     ctx.fillStyle = grad;
-    ctx.fillRect(x, 0, 1, h);
+    ctx.fillRect(x,0,1,h);
   }
-  const wg = ctx.createLinearGradient(0, 0, w * 0.3, 0);
-  wg.addColorStop(0, 'rgba(255,255,255,0.85)');
-  wg.addColorStop(1, 'rgba(255,255,255,0)');
+  const wg = ctx.createLinearGradient(0,0,w*0.3,0);
+  wg.addColorStop(0,'rgba(255,255,255,0.85)');
+  wg.addColorStop(1,'rgba(255,255,255,0)');
   ctx.fillStyle = wg;
-  ctx.fillRect(0, 0, w, h);
+  ctx.fillRect(0,0,w,h);
 }
 drawPanel();
 
-// 残り%計算
-function getRemaining(excludeIndex = -1) {
-  const used = records.reduce((sum, r, i) => i === excludeIndex ? sum : sum + r.percent, 0);
-  return Math.max(0, 100 - used);
+function pickColor(e) {
+  const r = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const x = (clientX - r.left) * (canvas.width / r.width);
+  const y = (clientY - r.top) * (canvas.height / r.height);
+  const p = ctx.getImageData(
+    Math.max(0,Math.min(canvas.width-1,Math.round(x))),
+    Math.max(0,Math.min(canvas.height-1,Math.round(y))),1,1).data;
+  selectedColor = `#${p[0].toString(16).padStart(2,'0')}${p[1].toString(16).padStart(2,'0')}${p[2].toString(16).padStart(2,'0')}`;
+  swatch.style.background = selectedColor;
+  codeEl.textContent = selectedColor.toUpperCase();
+  updateActiveBtn();
+  checkReady();
+}
+canvas.addEventListener('click', pickColor);
+canvas.addEventListener('touchstart', e=>{e.preventDefault();pickColor(e);},{passive:false});
+canvas.addEventListener('touchmove', e=>{e.preventDefault();pickColor(e);},{passive:false});
+
+function isLight(hex) {
+  const r=parseInt(hex.slice(1,3),16);
+  const g=parseInt(hex.slice(3,5),16);
+  const b=parseInt(hex.slice(5,7),16);
+  return (r*299+g*587+b*114)/1000 > 128;
+}
+
+function updateActiveBtn() {
+  const activeBtn = document.querySelector('.emotion-btn.active');
+  if (!activeBtn) return;
+  if (selectedColor) {
+    activeBtn.style.background = selectedColor;
+    activeBtn.style.color = isLight(selectedColor) ? '#333' : '#fff';
+  } else {
+    activeBtn.style.background = 'rgba(255,255,255,0.22)';
+    activeBtn.style.color = '#fff';
+  }
+}
+
+function getRemaining(excludeIndex=-1) {
+  const used = records.reduce((s,r,i)=>i===excludeIndex?s:s+r.percent,0);
+  return Math.max(0,100-used);
 }
 
 function updateSliderMax() {
@@ -294,7 +393,7 @@ function updateSliderMax() {
   if (selectedPercent > remain) {
     selectedPercent = remain;
     percentSlider.value = remain;
-    percentValue.textContent = remain + '%';
+    percentValue.textContent = remain+'%';
   }
   percentRemain.textContent = `残り ${remain}%`;
 }
@@ -309,353 +408,201 @@ function checkReady() {
   }
 }
 
-// 明るさ判定
-function isLight(hex) {
-  const r = parseInt(hex.slice(1,3),16);
-  const g = parseInt(hex.slice(3,5),16);
-  const b = parseInt(hex.slice(5,7),16);
-  return (r*299+g*587+b*114)/1000 > 128;
-}
-
-// アクティブボタンに色を反映
-function updateActiveBtn() {
-  const activeBtn = document.querySelector('.emotion-btn.active');
-  if (!activeBtn) return;
-  if (selectedColor) {
-    activeBtn.style.background = selectedColor;
-    activeBtn.style.color = isLight(selectedColor) ? '#333' : '#fff';
-  } else {
-    activeBtn.style.background = 'rgba(255,255,255,0.22)';
-    activeBtn.style.color = '#fff';
-  }
-}
-
-// ボタンの状態更新（記録済みはdisabled）
 function updateButtons() {
-  const usedEmotions = records.map((r, i) => i === editingIndex ? null : r.emotion).filter(Boolean);
-  document.querySelectorAll('.emotion-btn').forEach(btn => {
+  const usedEmotions = records.map((r,i)=>i===editingIndex?null:r.emotion).filter(Boolean);
+  document.querySelectorAll('.emotion-btn').forEach(btn=>{
     const isUsed = usedEmotions.includes(btn.dataset.emotion);
-    if (isUsed) {
-      btn.classList.add('hidden');
-      btn.disabled = true;
-    } else {
-      btn.classList.remove('hidden');
-      btn.disabled = false;
+    if (isUsed) { btn.classList.add('hidden'); btn.disabled=true; }
+    else {
+      btn.classList.remove('hidden'); btn.disabled=false;
       if (!btn.classList.contains('active')) {
-        btn.style.background = 'rgba(255,255,255,0.06)';
-        btn.style.color = 'rgba(255,255,255,0.7)';
+        btn.style.background='rgba(255,255,255,0.06)';
+        btn.style.color='rgba(255,255,255,0.7)';
       }
     }
   });
 }
 
-function pickColor(e) {
-  const r = canvas.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  const x = (clientX - r.left) * (canvas.width / r.width);
-  const y = (clientY - r.top) * (canvas.height / r.height);
-  const p = ctx.getImageData(
-    Math.max(0, Math.min(canvas.width-1, Math.round(x))),
-    Math.max(0, Math.min(canvas.height-1, Math.round(y))),
-    1, 1).data;
-  selectedColor = `#${p[0].toString(16).padStart(2,'0')}${p[1].toString(16).padStart(2,'0')}${p[2].toString(16).padStart(2,'0')}`;
-  swatch.style.background = selectedColor;
-  codeEl.textContent = selectedColor.toUpperCase();
-  updateActiveBtn();
-  checkReady();
-}
-canvas.addEventListener('click', pickColor);
-canvas.addEventListener('touchstart', e => { e.preventDefault(); pickColor(e); }, { passive: false });
-canvas.addEventListener('touchmove', e => { e.preventDefault(); pickColor(e); }, { passive: false });
-
-document.querySelectorAll('.emotion-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.emotion-btn').forEach(b => {
-      if (!b.disabled) {
-        b.classList.remove('active');
-        b.style.background = 'rgba(255,255,255,0.06)';
-        b.style.color = 'rgba(255,255,255,0.7)';
-      }
+document.querySelectorAll('.emotion-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.emotion-btn').forEach(b=>{
+      if(!b.disabled){b.classList.remove('active');b.style.background='rgba(255,255,255,0.06)';b.style.color='rgba(255,255,255,0.7)';}
     });
     btn.classList.add('active');
     selectedEmotion = btn.dataset.emotion;
     selectedType = btn.dataset.type;
-    blob.className = 'blob ' + selectedType;
+    blob.className = 'blob '+selectedType;
     updateActiveBtn();
     checkReady();
   });
 });
 
-percentSlider.addEventListener('input', () => {
+percentSlider.addEventListener('input',()=>{
   selectedPercent = parseInt(percentSlider.value);
-  percentValue.textContent = selectedPercent + '%';
-  if(editingIndex>=0 && selectedPercent===0){applyBtn.className='apply-btn ready';applyBtn.textContent='この記録を削除する';} else { checkReady(); }
+  percentValue.textContent = selectedPercent+'%';
+  if(editingIndex>=0 && selectedPercent===0){
+    applyBtn.className='apply-btn ready';
+    applyBtn.textContent='この記録を削除する';
+  } else { checkReady(); }
 });
 
-// 球体の色の島を更新
+document.getElementById('moreBtn').addEventListener('click',()=>{
+  const more = document.getElementById('moreEmotions');
+  const btn = document.getElementById('moreBtn');
+  if(more.style.display==='none'){more.style.display='grid';btn.textContent='閉じる ▴';}
+  else{more.style.display='none';btn.textContent='もっと見る ▾';}
+});
+
 function updateColorIslands() {
-  colorIslands.innerHTML = '';
-  // 古いislandGradを削除
-  document.querySelectorAll('[id^="islandGlow"]').forEach(e => e.remove());
-  if (records.length === 0) return;
-
-  // 球体の半径=70px基準。%に応じてサイズを決める
-  // 100%=半径38, 50%=半径27, 10%=半径12
-  const blobR = 70;
-  const positions = [
-    { cx: 90, cy: 95 },
-    { cx: 112, cy: 108 },
-    { cx: 88, cy: 118 },
-  ];
-
-  records.forEach((rec, i) => {
-    if (rec.percent === 0) return;
-    const pos = positions[i];
-    const r = Math.max(6, Math.round(blobR * Math.sqrt(rec.percent / 100) * 0.72));
-
-    // グロー
-    const glowId = `islandGlow${i}`;
-    const glowGrad = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
-    glowGrad.setAttribute('id', glowId);
-    glowGrad.setAttribute('cx', '50%');
-    glowGrad.setAttribute('cy', '50%');
-    glowGrad.setAttribute('r', '50%');
-    const s1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-    s1.setAttribute('offset', '0%');
-    s1.setAttribute('stop-color', rec.color);
-    s1.setAttribute('stop-opacity', '0.85');
-    const s2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-    s2.setAttribute('offset', '100%');
-    s2.setAttribute('stop-color', rec.color);
-    s2.setAttribute('stop-opacity', '0');
-    glowGrad.appendChild(s1);
-    glowGrad.appendChild(s2);
-
-    const defs = document.querySelector('#blobSvg defs');
-    // 既存のislandGradを削除してから追加
-    const old = document.getElementById(glowId);
-    if (old) old.remove();
-    defs.appendChild(glowGrad);
-
-    // 外グロー
-    const glowCircle = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-    glowCircle.setAttribute('cx', pos.cx);
-    glowCircle.setAttribute('cy', pos.cy);
-    glowCircle.setAttribute('rx', r * 1.6);
-    glowCircle.setAttribute('ry', r * 1.6);
-    glowCircle.setAttribute('fill', `url(#${glowId})`);
-    glowCircle.setAttribute('filter', 'url(#blobBlur)');
-    colorIslands.appendChild(glowCircle);
-
-    // 本体の円
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-    circle.setAttribute('cx', pos.cx);
-    circle.setAttribute('cy', pos.cy);
-    circle.setAttribute('rx', r);
-    circle.setAttribute('ry', r);
-    circle.setAttribute('fill', rec.color);
-    circle.setAttribute('fill-opacity', '0.75');
-    colorIslands.appendChild(circle);
-
-    // ハイライト
-    const hl = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-    hl.setAttribute('cx', pos.cx - r * 0.25);
-    hl.setAttribute('cy', pos.cy - r * 0.3);
-    hl.setAttribute('rx', r * 0.3);
-    hl.setAttribute('ry', r * 0.2);
-    hl.setAttribute('fill', 'white');
-    hl.setAttribute('fill-opacity', '0.4');
-    colorIslands.appendChild(hl);
+  colorIslands.innerHTML='';
+  document.querySelectorAll('[id^="igr"],[id^="iblur"]').forEach(e=>e.remove());
+  const activeRecs = records.filter(r=>r.percent>0);
+  if(activeRecs.length===0) return;
+  const cx=100,cy=104,R=69;
+  const defs = document.querySelector('#blobSvg defs');
+  const n = activeRecs.length;
+  const scale = n===1?1.0:n===2?1.42:1.72;
+  const radii = activeRecs.map(rec=>R*Math.sqrt(rec.percent/100)*scale);
+  let positions=[];
+  if(n===1){positions=[{x:cx,y:cy}];}
+  else if(n===2){positions=[{x:cx-radii[0]*0.5,y:cy},{x:cx+radii[1]*0.5,y:cy}];}
+  else if(n===3){
+    positions=[
+      {x:cx-radii[0]*0.42,y:cy-radii[0]*0.28},
+      {x:cx+radii[1]*0.42,y:cy-radii[1]*0.28},
+      {x:cx,y:cy+radii[2]*0.52}
+    ];
+  }
+  activeRecs.forEach((rec,i)=>{
+    const r=radii[i]; const pos=positions[i];
+    const gid=`igr${i}`;
+    const grad=document.createElementNS('http://www.w3.org/2000/svg','radialGradient');
+    grad.setAttribute('id',gid);grad.setAttribute('cx','36%');grad.setAttribute('cy','32%');grad.setAttribute('r','68%');
+    [[0,'#ffffff',0.5],[18,rec.color,0.97],[100,rec.color,0.85]].forEach(([pct,color,opacity])=>{
+      const s=document.createElementNS('http://www.w3.org/2000/svg','stop');
+      s.setAttribute('offset',pct+'%');s.setAttribute('stop-color',color);s.setAttribute('stop-opacity',opacity);
+      grad.appendChild(s);
+    });
+    defs.appendChild(grad);
+    const el=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    el.setAttribute('cx',pos.x.toFixed(1));el.setAttribute('cy',pos.y.toFixed(1));
+    el.setAttribute('r',r.toFixed(1));el.setAttribute('fill',`url(#${gid})`);
+    el.setAttribute('clip-path','url(#blobClip)');
+    colorIslands.appendChild(el);
   });
 }
 
-// 記録描画
+function updateEmotionLabels() {
+  const labelsEl = document.getElementById('emotionLabels');
+  labelsEl.innerHTML='';
+  const activeRecs = records.filter(r=>r.percent>0);
+  if(activeRecs.length===0) return;
+  const n=activeRecs.length;
+  const scale=n===1?1.0:n===2?1.42:1.72;
+  const R=69;
+  const radii=activeRecs.map(rec=>R*Math.sqrt(rec.percent/100)*scale);
+  let positions=[];
+  if(n===1){positions=[{x:100,y:108}];}
+  else if(n===2){positions=[{x:100-radii[0]*0.5,y:108},{x:100+radii[1]*0.5,y:108}];}
+  else{
+    positions=[
+      {x:100-radii[0]*0.42,y:104-radii[0]*0.28+4},
+      {x:100+radii[1]*0.42,y:104-radii[1]*0.28+4},
+      {x:100,y:104+radii[2]*0.52+4}
+    ];
+  }
+  activeRecs.forEach((rec,i)=>{
+    const pos=positions[i];
+    const text=document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x',pos.x);text.setAttribute('y',pos.y);
+    text.setAttribute('text-anchor','middle');text.setAttribute('font-size','10');
+    text.setAttribute('font-weight','bold');
+    const textColor=isLight(rec.color)?'#333333':'#ffffff';
+    text.setAttribute('fill',textColor);text.setAttribute('fill-opacity','0.95');
+    text.setAttribute('style','font-family: Hiragino Sans, sans-serif;');
+    text.textContent=rec.emotion;
+    labelsEl.appendChild(text);
+  });
+}
+
 function renderRecords() {
-  recordsEl.innerHTML = '';
-  records.forEach((rec, i) => {
-    const el = document.createElement('div');
-    el.className = 'record-item' + (editingIndex === i ? ' editing' : '');
-    el.innerHTML = `
-      <div class="record-swatch" style="background:${rec.color}"></div>
+  recordsEl.innerHTML='';
+  records.forEach((rec,i)=>{
+    const el=document.createElement('div');
+    el.className='record-item'+(editingIndex===i?' editing':'');
+    el.innerHTML=`<div class="record-swatch" style="background:${rec.color}"></div>
       <span class="record-emotion">${rec.emotion}</span>
       <span class="record-pct">${rec.percent}%</span>
       <span class="record-code">${rec.color.toUpperCase()}</span>
-      <span class="record-edit">タップで修正</span>
-    `;
-    el.addEventListener('click', () => startEditing(i));
+      <span class="record-edit">タップで修正</span>`;
+    el.addEventListener('click',()=>startEditing(i));
     recordsEl.appendChild(el);
   });
 }
 
-// 編集開始
 function startEditing(index) {
-  editingIndex = index;
-  const rec = records[index];
-
-  // 感情ボタンを復元
-  document.querySelectorAll('.emotion-btn').forEach(b => {
-    b.classList.remove('active');
-    b.style.background = 'rgba(255,255,255,0.06)';
-    b.style.color = 'rgba(255,255,255,0.7)';
-  });
+  editingIndex=index;
+  const rec=records[index];
+  document.querySelectorAll('.emotion-btn').forEach(b=>{b.classList.remove('active');b.style.background='rgba(255,255,255,0.06)';b.style.color='rgba(255,255,255,0.7)';});
   updateButtons();
-
-  const btn = [...document.querySelectorAll('.emotion-btn')].find(b => b.dataset.emotion === rec.emotion);
-  if (btn) {
-    btn.disabled = false;
-    btn.classList.remove('hidden');
-    btn.classList.add('active');
-    btn.style.background = rec.color;
-    btn.style.color = isLight(rec.color) ? '#333' : '#fff';
-  }
-
-  selectedEmotion = rec.emotion;
-  selectedType = rec.type;
-  selectedColor = rec.color;
-  selectedPercent = rec.percent;
-
-  swatch.style.background = rec.color;
-  codeEl.textContent = rec.color.toUpperCase();
-  percentSlider.value = rec.percent;
-  percentValue.textContent = rec.percent + '%';
-
-  blob.className = 'blob ' + rec.type;
-  updateSliderMax();
-  checkReady();
-  renderRecords();
+  const btn=[...document.querySelectorAll('.emotion-btn')].find(b=>b.dataset.emotion===rec.emotion);
+  if(btn){btn.disabled=false;btn.classList.remove('hidden');btn.classList.add('active');btn.style.background=rec.color;btn.style.color=isLight(rec.color)?'#333':'#fff';}
+  selectedEmotion=rec.emotion;selectedType=rec.type;selectedColor=rec.color;selectedPercent=rec.percent;
+  swatch.style.background=rec.color;codeEl.textContent=rec.color.toUpperCase();
+  percentSlider.value=rec.percent;percentValue.textContent=rec.percent+'%';
+  blob.className='blob '+rec.type;
+  updateSliderMax();checkReady();renderRecords();
 }
 
-// 記録追加
-function addRecord(emotion, color, type, percent) {
-  const rec = { emotion, color, type, percent };
-  if (editingIndex >= 0) {
-    if (percent === 0) {
-      // 0%にしたら削除
-      records.splice(editingIndex, 1);
-    } else {
-      records[editingIndex] = rec;
-    }
-    editingIndex = -1;
-    updateColorIslands();
-    updateEmotionLabels();
-    renderRecords();
-    resetInput();
-  } else if (records.length < 3) {
+function addRecord(emotion,color,type,percent) {
+  const rec={emotion,color,type,percent};
+  if(editingIndex>=0){
+    if(percent===0){records.splice(editingIndex,1);}
+    else{records[editingIndex]=rec;}
+    editingIndex=-1;
+    updateColorIslands();updateEmotionLabels();renderRecords();resetInput();
+  } else if(records.length<3){
     records.push(rec);
-    updateColorIslands();
-    updateEmotionLabels();
-    renderRecords();
-    resetInput();
+    updateColorIslands();updateEmotionLabels();renderRecords();resetInput();
   } else {
-    pendingRecord = rec;
-    showModal();
+    pendingRecord=rec;showModal();
   }
 }
 
 function resetInput() {
-  selectedColor = null;
-  selectedEmotion = null;
-  selectedType = null;
-  selectedPercent = 50;
-  editingIndex = -1;
-  percentSlider.value = 50;
-  percentValue.textContent = '50%';
-  swatch.style.background = '#888';
-  codeEl.textContent = '色を選んでください';
-  document.querySelectorAll('.emotion-btn').forEach(b => {
-    b.classList.remove('active');
-    b.style.background = 'rgba(255,255,255,0.06)';
-    b.style.color = 'rgba(255,255,255,0.7)';
-  });
-  blob.className = 'blob';
-  updateButtons();
-  updateSliderMax();
-  checkReady();
+  selectedColor=null;selectedEmotion=null;selectedType=null;selectedPercent=50;editingIndex=-1;
+  percentSlider.value=50;percentValue.textContent='50%';
+  swatch.style.background='#888';codeEl.textContent='色を選んでください';
+  document.querySelectorAll('.emotion-btn').forEach(b=>{b.classList.remove('active');b.style.background='rgba(255,255,255,0.06)';b.style.color='rgba(255,255,255,0.7)';});
+  blob.className='blob';
+  updateEmotionLabels();updateButtons();updateSliderMax();checkReady();
 }
 
 function showModal() {
-  modalRecordsEl.innerHTML = '';
-  records.forEach((rec, i) => {
-    const el = document.createElement('div');
-    el.className = 'modal-record';
-    el.innerHTML = `
-      <div class="modal-swatch" style="background:${rec.color}"></div>
-      <div class="modal-info">
-        <span class="modal-emotion">${rec.emotion}</span>
-        <span class="modal-pct">${rec.percent}%　${rec.color.toUpperCase()}</span>
-      </div>
-    `;
-    el.addEventListener('click', () => {
-      records[i] = pendingRecord;
-      pendingRecord = null;
-      updateColorIslands();
-      renderRecords();
-      resetInput();
-      hideModal();
+  modalRecordsEl.innerHTML='';
+  records.forEach((rec,i)=>{
+    const el=document.createElement('div');
+    el.className='modal-record';
+    el.innerHTML=`<div class="modal-swatch" style="background:${rec.color}"></div>
+      <div class="modal-info"><span class="modal-emotion">${rec.emotion}</span>
+      <span class="modal-pct">${rec.percent}%　${rec.color.toUpperCase()}</span></div>`;
+    el.addEventListener('click',()=>{
+      records[i]=pendingRecord;pendingRecord=null;
+      updateColorIslands();updateEmotionLabels();renderRecords();resetInput();hideModal();
     });
     modalRecordsEl.appendChild(el);
   });
   modalOverlay.classList.add('visible');
 }
+function hideModal(){modalOverlay.classList.remove('visible');pendingRecord=null;}
+modalCancel.addEventListener('click',hideModal);
 
-function hideModal() {
-  modalOverlay.classList.remove('visible');
-  pendingRecord = null;
-}
-
-modalCancel.addEventListener('click', hideModal);
-
-applyBtn.addEventListener('click', () => {
-  if (!selectedColor || !selectedEmotion) return;
-  addRecord(selectedEmotion, selectedColor, selectedType, selectedPercent);
+applyBtn.addEventListener('click',()=>{
+  if(!selectedColor||!selectedEmotion) return;
+  addRecord(selectedEmotion,selectedColor,selectedType,selectedPercent);
 });
 
-// 初期化
-updateSliderMax();
-checkReady();
-
-document.getElementById('moreBtn').addEventListener('click', () => {
-  const more = document.getElementById('moreEmotions');
-  const btn = document.getElementById('moreBtn');
-  if (more.style.display === 'none') {
-    more.style.display = 'grid';
-    btn.textContent = '閉じる ▴';
-  } else {
-    more.style.display = 'none';
-    btn.textContent = 'もっと見る ▾';
-  }
-});
-
-function updateEmotionLabels() {
-  const labelsEl = document.getElementById('emotionLabels');
-  if (!labelsEl) return;
-  labelsEl.innerHTML = '';
-  const activeRecs = records.filter(r => r.percent > 0);
-  if (activeRecs.length === 0) return;
-
-  const positions = [
-    { x: 90, y: 99 },
-    { x: 113, y: 112 },
-    { x: 88, y: 122 },
-  ];
-
-  activeRecs.forEach((rec, i) => {
-    const pos = positions[i] || { x: 100, y: 104 };
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', pos.x);
-    text.setAttribute('y', pos.y);
-    text.setAttribute('text-anchor', 'middle');
-    text.setAttribute('font-size', '10');
-    text.setAttribute('font-weight', 'bold');
-    const textColor = isLight(rec.color) ? '#333333' : '#ffffff';
-    text.setAttribute('fill', textColor);
-    text.setAttribute('fill-opacity', '0.95');
-    text.setAttribute('style', 'font-family: Hiragino Sans, sans-serif;');
-    text.textContent = rec.emotion;
-    labelsEl.appendChild(text);
-  });
-}
+updateSliderMax();checkReady();
 </script>
 </body>
 </html>
