@@ -58,6 +58,12 @@
   .emotion-btn.active{color:#fff;border-color:rgba(255,255,255,.4);font-weight:bold}
   .emotion-btn:disabled{opacity:0.4;cursor:not-allowed}
   .emotion-btn.hidden{display:none}
+  .more-btn{
+    background:none;border:none;color:rgba(255,255,255,.45);
+    font-size:12px;cursor:pointer;padding:2px 0;
+    transition:color .2s;letter-spacing:.05em;
+  }
+  .more-btn:hover{color:rgba(255,255,255,.8)}
 
   #colorCanvas{width:100%;height:100px;border-radius:8px;cursor:crosshair;border:1px solid rgba(255,255,255,.15);display:block;}
   .selected-color{display:flex;align-items:center;gap:8px}
@@ -184,14 +190,26 @@
 
 <div class="input-area">
   <div class="emotion-buttons" id="emotionButtons">
-    <button class="emotion-btn" data-emotion="喜び" data-type="joy">喜び</button>
-    <button class="emotion-btn" data-emotion="期待" data-type="joy">期待</button>
-    <button class="emotion-btn" data-emotion="信頼" data-type="calm">信頼</button>
-    <button class="emotion-btn" data-emotion="驚き" data-type="joy">驚き</button>
-    <button class="emotion-btn" data-emotion="悲しみ" data-type="sad">悲しみ</button>
-    <button class="emotion-btn" data-emotion="嫌悪" data-type="sad">嫌悪</button>
+    <button class="emotion-btn" data-emotion="嬉しい" data-type="joy">嬉しい</button>
+    <button class="emotion-btn" data-emotion="楽しい" data-type="joy">楽しい</button>
+    <button class="emotion-btn" data-emotion="好き" data-type="joy">好き</button>
+    <button class="emotion-btn" data-emotion="穏やか" data-type="calm">穏やか</button>
+    <button class="emotion-btn" data-emotion="悲しい" data-type="sad">悲しい</button>
+    <button class="emotion-btn" data-emotion="イライラ" data-type="angry">イライラ</button>
+    <button class="emotion-btn" data-emotion="不安" data-type="angry">不安</button>
+    <button class="emotion-btn" data-emotion="疲れた" data-type="sad">疲れた</button>
+  </div>
+  <button class="more-btn" id="moreBtn">もっと見る ▾</button>
+  <div class="emotion-buttons more-emotions" id="moreEmotions" style="display:none;">
     <button class="emotion-btn" data-emotion="怒り" data-type="angry">怒り</button>
-    <button class="emotion-btn" data-emotion="恐れ" data-type="angry">恐れ</button>
+    <button class="emotion-btn" data-emotion="モヤモヤ" data-type="sad">モヤモヤ</button>
+    <button class="emotion-btn" data-emotion="しんどい" data-type="sad">しんどい</button>
+    <button class="emotion-btn" data-emotion="嫌い" data-type="angry">嫌い</button>
+    <button class="emotion-btn" data-emotion="退屈" data-type="sad">退屈</button>
+    <button class="emotion-btn" data-emotion="ワクワク" data-type="joy">ワクワク</button>
+    <button class="emotion-btn" data-emotion="ありがたい" data-type="calm">ありがたい</button>
+    <button class="emotion-btn" data-emotion="興味深い" data-type="calm">興味深い</button>
+    <button class="emotion-btn" data-emotion="スッキリ" data-type="joy">スッキリ</button>
   </div>
 
   <canvas id="colorCanvas" width="580" height="200"></canvas>
@@ -588,6 +606,18 @@ applyBtn.addEventListener('click', () => {
 // 初期化
 updateSliderMax();
 checkReady();
+
+document.getElementById('moreBtn').addEventListener('click', () => {
+  const more = document.getElementById('moreEmotions');
+  const btn = document.getElementById('moreBtn');
+  if (more.style.display === 'none') {
+    more.style.display = 'grid';
+    btn.textContent = '閉じる ▴';
+  } else {
+    more.style.display = 'none';
+    btn.textContent = 'もっと見る ▾';
+  }
+});
 
 function updateEmotionLabels() {
   const labelsEl = document.getElementById('emotionLabels');
