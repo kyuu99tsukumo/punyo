@@ -33,26 +33,47 @@
     height: 220px;
     flex-shrink: 0;
     margin-top: 12px;
-    animation: punya 3.2s ease-in-out infinite;
   }
   @keyframes punya {
     0%{transform:scale(1,1)} 22%{transform:scale(1.07,0.93)}
     48%{transform:scale(0.94,1.08)} 72%{transform:scale(1.05,0.96)} 100%{transform:scale(1,1)}
   }
-  @keyframes punya-angry {
-    0%{transform:scale(1,1) rotate(0deg)} 15%{transform:scale(1.05,0.96) rotate(-2deg)}
-    30%{transform:scale(0.97,1.04) rotate(2deg)} 100%{transform:scale(1,1) rotate(0deg)}
-  }
-  @keyframes punya-sad {
-    0%{transform:scale(1,1)} 30%{transform:scale(1.02,0.96)} 60%{transform:scale(0.98,1.03)} 100%{transform:scale(1,1)}
-  }
+  /* joy：軽く跳ねる */
   @keyframes punya-joy {
-    0%{transform:scale(1,1)} 25%{transform:scale(1.10,0.92)}
-    55%{transform:scale(0.92,1.10)} 80%{transform:scale(1.06,0.95)} 100%{transform:scale(1,1)}
+    0%{transform:scale(1,1) translateY(0)} 20%{transform:scale(1.08,0.93) translateY(2px)}
+    45%{transform:scale(0.93,1.10) translateY(-6px)} 70%{transform:scale(1.05,0.96) translateY(1px)}
+    100%{transform:scale(1,1) translateY(0)}
   }
-  .blob.angry{animation-name:punya-angry;animation-duration:1.8s}
-  .blob.sad{animation-name:punya-sad;animation-duration:4.5s}
-  .blob.joy{animation-name:punya-joy;animation-duration:2.2s}
+  /* love：ふわふわ膨らむ */
+  @keyframes punya-love {
+    0%{transform:scale(1,1)} 40%{transform:scale(1.06,1.06)} 100%{transform:scale(1,1)}
+  }
+  /* calm：ゆっくり揺れる */
+  @keyframes punya-calm {
+    0%{transform:scale(1,1) rotate(0deg)} 35%{transform:scale(1.02,0.99) rotate(1deg)}
+    70%{transform:scale(0.99,1.02) rotate(-1deg)} 100%{transform:scale(1,1) rotate(0deg)}
+  }
+  /* sad：重く沈む */
+  @keyframes punya-sad {
+    0%{transform:scale(1,1) translateY(0)} 40%{transform:scale(1.04,0.95) translateY(4px)}
+    75%{transform:scale(0.97,1.03) translateY(2px)} 100%{transform:scale(1,1) translateY(0)}
+  }
+  /* anxiety：細かく震える */
+  @keyframes punya-anxiety {
+    0%{transform:translate(0,0) scale(1)} 10%{transform:translate(-2px,1px) scale(1.01,0.99)}
+    20%{transform:translate(2px,-1px) scale(0.99,1.01)} 30%{transform:translate(-1px,2px) scale(1.01)}
+    40%{transform:translate(1px,-2px) scale(0.99)} 50%{transform:translate(-2px,1px) scale(1)}
+    60%{transform:translate(2px,1px) scale(1.01,0.99)} 70%{transform:translate(-1px,-1px) scale(0.99)}
+    80%{transform:translate(1px,2px) scale(1)} 100%{transform:translate(0,0) scale(1)}
+  }
+  /* angry：固く振動 */
+  @keyframes punya-angry {
+    0%{transform:scale(1,1) rotate(0deg)} 10%{transform:scale(1.04,0.97) rotate(-2.5deg)}
+    20%{transform:scale(0.97,1.03) rotate(2.5deg)} 30%{transform:scale(1.03,0.98) rotate(-2deg)}
+    40%{transform:scale(0.98,1.02) rotate(2deg)} 50%{transform:scale(1.04,0.97) rotate(-1.5deg)}
+    60%{transform:scale(0.97,1.03) rotate(1.5deg)} 80%{transform:scale(1.02,0.99) rotate(-1deg)}
+    100%{transform:scale(1,1) rotate(0deg)}
+  }
   @keyframes inner-drift {
     0%{transform:translate(0,0) scale(1);opacity:.55} 40%{transform:translate(6px,-8px) scale(1.1);opacity:.75}
     70%{transform:translate(-5px,5px) scale(.94);opacity:.45} 100%{transform:translate(0,0) scale(1);opacity:.55}
@@ -379,17 +400,17 @@
     <button class="emotion-btn" data-emotion="楽しい" data-type="joy">楽しい<span class="btn-code"></span></button>
     <button class="emotion-btn" data-emotion="悲しい" data-type="sad">悲しい<span class="btn-code"></span></button>
     <button class="emotion-btn" data-emotion="イライラ" data-type="angry">イライラ<span class="btn-code"></span></button>
-    <button class="emotion-btn" data-emotion="好き" data-type="joy">好き<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="好き" data-type="love">好き<span class="btn-code"></span></button>
     <button class="emotion-btn" data-emotion="穏やか" data-type="calm">穏やか<span class="btn-code"></span></button>
-    <button class="emotion-btn" data-emotion="不安" data-type="angry">不安<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="不安" data-type="anxiety">不安<span class="btn-code"></span></button>
     <button class="emotion-btn" data-emotion="疲れた" data-type="sad">疲れた<span class="btn-code"></span></button>
   </div>
   <button class="more-btn" id="moreBtn">もっと見る ▾<span class="btn-code"></span></button>
   <div class="emotion-buttons" id="moreEmotions" style="display:none;">
     <button class="emotion-btn" data-emotion="ワクワク" data-type="joy">ワクワク<span class="btn-code"></span></button>
-    <button class="emotion-btn" data-emotion="ありがたい" data-type="calm">ありがたい<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="感謝" data-type="love">感謝<span class="btn-code"></span></button>
     <button class="emotion-btn" data-emotion="怒り" data-type="angry">怒り<span class="btn-code"></span></button>
-    <button class="emotion-btn" data-emotion="モヤモヤ" data-type="sad">モヤモヤ<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="モヤモヤ" data-type="anxiety">モヤモヤ<span class="btn-code"></span></button>
     <button class="emotion-btn" data-emotion="興味深い" data-type="calm">興味深い<span class="btn-code"></span></button>
     <button class="emotion-btn" data-emotion="スッキリ" data-type="joy">スッキリ<span class="btn-code"></span></button>
     <button class="emotion-btn" data-emotion="しんどい" data-type="sad">しんどい<span class="btn-code"></span></button>
@@ -419,18 +440,20 @@
 <div class="screen" id="screen-about">
 <div class="about-screen">
   <h2>概要</h2>
-  <p>透明なぷにょ球体が、あなたの心の分身です。そこに言葉と色を入れると、球体がその感情に応じて変化します<span style="color:rgba(255,255,255,0.4);font-size:12px;">*</span>。自分の感じたことを自分なりに表現するためのツールです。</p>
+  <p>透明なぷにょ球体は、あなたの心の分身です。</p>
+  <p>そのなかに言葉と色を入れると、球体がその感情に応じて動きが変わります<span style="color:rgba(255,255,255,0.4);font-size:12px;">*</span>。ぷにょは、いま自分の感じたことを自分なりに表現するためのツールです。</p>
   <p style="color:rgba(255,255,255,0.35);font-size:12px;">*開発予定</p>
   <hr class="about-divider">
   <h2>使い方</h2>
   <p>感情の言葉を選び、カラーパネルで「自分にとってのその色」を直感で選ぶ。その感情の割合（%）も自分の感覚で決めてOK。3つまで記録できます。正解はありません。</p>
   <hr class="about-divider">
   <h2>開発背景</h2>
-  <p>ウェルビーイングは、他者が測れるものではありません。自分の納得感こそが重要です。それを数値やスコアに置き換えた瞬間、それは誰かの曖昧な基準になってしまうだけです。自分の幸せの実感は、自分にしかわからない。そこでこのツールを開発しました。</p>
+  <p>「ウェルビーイングを、数値化するでも測るでもなく扱えないか？」という問いが開発のきっかけでした。</p>
+  <p>そもそもウェルビーイングとは、他者が測れるものでもなく、自分で認識している人もかなり少ないと思います。しかし確実に重要なのは、「自分の納得感」です。それは数字や他者の言葉に置き換えた瞬間、それは誰かの曖昧な基準で評価されてしまうだけです。本来、自分の幸せは、自分にしかわからないこと。そこでまずはアウトプットすることを目的としたツールを開発しました。</p>
   <hr class="about-divider">
   <h2>自分との対話 ≒ 世界との対話</h2>
-  <p>感情処理と言語化の回路のつながりが薄い人、特に「今日どうだった？」と聞かれて「別に」で終わらせてしまう人は多い。それは弱さではなく、脳の仕様です。でもそれが続くと、自分でも自分の状態がわからなくなっていく。</p>
-  <p>このツールは「怒り=赤」のような既存の記号を使わず、今日の自分にとっての感じたものが何色か・どんな言葉かを、直感的に選ぶだけです。測るのではなく、表現する。その積み重ねが、自分との対話になります。</p>
+  <p>感情処理と言語化の回路のつながりが薄い人、特に「今日どうだった？」と訊かれて「別に」で終わらせてしまう人は想像より多いです。それは弱さではなく、脳の仕様や社会構造がそうさせるのです。しかしそれが続くと、自分でも自分の状態がわからなくなっていき、気づいた頃には大切な何かを失っていることがあります。いわばこのツールは自分をケアするためのものでもあります。</p>
+  <p>そしてツールでは「怒り=赤」のような既存の記号を使わず、いまの自分にとっての感じたものがどんな言葉か・なに色かを、直感的に選ぶだけです。測るのではなく、表現する。その積み重ねが自分を労り、ケアしつづけることに繋がっていくのです。</p>
   <hr class="about-divider">
   <p style="color:rgba(255,255,255,0.35);font-size:13px;">Proto's out 2026.4.2</p>
 </div>
@@ -454,6 +477,20 @@
 </div>
 
 <script>
+// アニメーションタイプのパラメータ
+const ANIM_PARAMS = {
+  // speed: アニメ速度(秒), intensity: 強さ
+  // weight: -1=軽い(上)〜1=重い(下)
+  // scaleX/scaleY: 形の変形（1=円形、<1=潰れる、>1=伸びる）
+  // pointy: とがり具合（0=丸、1=三角っぽく）
+  joy:     { speed: 1.8, intensity: 1.0, weight: -0.8, scaleX: 0.92, scaleY: 1.10, pointy: 0.0 },
+  love:    { speed: 3.5, intensity: 0.7, weight: -0.4, scaleX: 1.05, scaleY: 1.05, pointy: 0.0 },
+  calm:    { speed: 5.0, intensity: 0.3, weight:  0.0, scaleX: 1.00, scaleY: 1.00, pointy: 0.0 },
+  anxiety: { speed: 1.2, intensity: 0.9, weight:  0.3, scaleX: 1.04, scaleY: 0.97, pointy: 0.1 },
+  sad:     { speed: 4.0, intensity: 0.5, weight:  0.8, scaleX: 1.12, scaleY: 0.88, pointy: 0.0 },
+  angry:   { speed: 1.4, intensity: 1.0, weight:  0.6, scaleX: 0.95, scaleY: 1.08, pointy: 0.7 },
+};
+
 const blob = document.getElementById('blob');
 const canvas = document.getElementById('colorCanvas');
 const ctx = canvas.getContext('2d');
@@ -598,7 +635,7 @@ document.querySelectorAll('.emotion-btn').forEach(btn=>{
     btn.classList.add('active');
     selectedEmotion = btn.dataset.emotion;
     selectedType = btn.dataset.type;
-    blob.className = 'blob '+selectedType;
+    setBlobAnimation(selectedType);
     updateActiveBtn();
     checkReady();
   });
@@ -620,6 +657,113 @@ document.getElementById('moreBtn').addEventListener('click',()=>{
   else{more.style.display='none';btn.textContent='もっと見る ▾';}
 });
 
+function setBlobAnimation(type) {
+  const p = ANIM_PARAMS[type] || ANIM_PARAMS.calm;
+  blob.style.animationName = 'punya-' + type;
+  blob.style.animationDuration = p.speed + 's';
+  blob.style.animationTimingFunction = type === 'anxiety' ? 'linear' : 'ease-in-out';
+  blob.style.animationIterationCount = 'infinite';
+}
+
+function resetBlobAnimation() {
+  blob.style.animationName = 'punya';
+  blob.style.animationDuration = '3.2s';
+  blob.style.animationTimingFunction = 'ease-in-out';
+  blob.style.animationIterationCount = 'infinite';
+}
+
+function updateBlobAnimation() {
+  const active = records.filter(r => r.percent > 0);
+  if (active.length === 0) {
+    resetBlobAnimation();
+    updateBlobShape(null);
+    return;
+  }
+  let totalPct = active.reduce((s, r) => s + r.percent, 0);
+  let blendedSpeed = 0, blendedWeight = 0;
+  let blendedScaleX = 0, blendedScaleY = 0, blendedPointy = 0;
+  let dominantType = active[0].type;
+  let maxPct = 0;
+  active.forEach(r => {
+    const p = ANIM_PARAMS[r.type] || ANIM_PARAMS.calm;
+    const w = r.percent / totalPct;
+    blendedSpeed    += p.speed   * w;
+    blendedWeight   += p.weight  * w;
+    blendedScaleX   += p.scaleX  * w;
+    blendedScaleY   += p.scaleY  * w;
+    blendedPointy   += p.pointy  * w;
+    if (r.percent > maxPct) { maxPct = r.percent; dominantType = r.type; }
+  });
+  // 上位2感情を優先（%が多い順）
+  const top2 = active.slice().sort((a,b)=>b.percent-a.percent).slice(0,2);
+  const top2Total = top2.reduce((s,r)=>s+r.percent,0);
+  let top2Speed=0;
+  top2.forEach(r=>{
+    const p=ANIM_PARAMS[r.type]||ANIM_PARAMS.calm;
+    top2Speed += p.speed*(r.percent/top2Total);
+  });
+  // dominant は上位2の中で多い方
+  const dominant2 = top2[0].type;
+  setBlobAnimation(dominant2);
+  blob.style.animationDuration = top2Speed.toFixed(2) + 's';
+  updateBlobShape({ weight: blendedWeight, scaleX: blendedScaleX, scaleY: blendedScaleY, pointy: blendedPointy });
+  updateIslandPositions(blendedWeight);
+}
+
+function updateBlobShape(params) {
+  const blobEllipse = document.getElementById('blobEllipse');
+  const blobClipEllipse = document.querySelector('#blobClip ellipse');
+  if (!params) {
+    // リセット
+    if (blobEllipse) { blobEllipse.setAttribute('rx','72'); blobEllipse.setAttribute('ry','76'); blobEllipse.setAttribute('cx','100'); blobEllipse.setAttribute('cy','104'); }
+    if (blobClipEllipse) { blobClipEllipse.setAttribute('rx','70'); blobClipEllipse.setAttribute('ry','74'); blobClipEllipse.setAttribute('cx','100'); blobClipEllipse.setAttribute('cy','104'); }
+    return;
+  }
+  const baseRx = 72, baseRy = 76;
+  const rx = Math.round(baseRx * params.scaleX);
+  const ry = Math.round(baseRy * params.scaleY);
+  // 重さで垂直位置をずらす（-1で上、+1で下）
+  const cyOffset = Math.round(params.weight * 8);
+  const cy = 104 + cyOffset;
+  if (blobEllipse) {
+    blobEllipse.setAttribute('rx', rx);
+    blobEllipse.setAttribute('ry', ry);
+    blobEllipse.setAttribute('cy', cy);
+  }
+  if (blobClipEllipse) {
+    blobClipEllipse.setAttribute('rx', rx - 2);
+    blobClipEllipse.setAttribute('ry', ry - 2);
+    blobClipEllipse.setAttribute('cy', cy);
+  }
+  // とがり表現：filterでぷにょをとがらせる
+  applyPointyFilter(params.pointy, cy);
+}
+
+function applyPointyFilter(pointy, cy) {
+  const blobSvg = document.getElementById('blobSvg');
+  let filt = document.getElementById('pointyFilter');
+  if (!filt) {
+    filt = document.createElementNS('http://www.w3.org/2000/svg','filter');
+    filt.setAttribute('id','pointyFilter');
+    document.querySelector('#blobSvg defs').appendChild(filt);
+  }
+  if (pointy < 0.05) {
+    document.getElementById('blobEllipse').removeAttribute('filter');
+    return;
+  }
+  // feTurbulenceで有機的なとがりを表現
+  filt.innerHTML = `<feTurbulence type="turbulence" baseFrequency="${(0.02*pointy).toFixed(3)}" numOctaves="2" seed="3" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="${Math.round(pointy*18)}" xChannelSelector="R" yChannelSelector="G"/>`;
+  const blobEllipse = document.getElementById('blobEllipse');
+  if (blobEllipse) blobEllipse.setAttribute('filter','url(#pointyFilter)');
+}
+
+function updateIslandPositions(weight) {
+  // 色玉のY座標を重さで調整（軽いと上、重いと下）
+  // updateColorIslandsを再呼び出し（weightをグローバルに保持）
+  window._currentWeight = weight;
+}
+
 function updateColorIslands() {
   colorIslands.innerHTML='';
   document.querySelectorAll('[id^="igr"]').forEach(e=>e.remove());
@@ -634,26 +778,115 @@ function updateColorIslands() {
   // 重なりを30%以下に：2つの円が接触する距離 = r0+r1、重なり30%以下 = 距離 >= r0+r1-(min(r0,r1)*0.3)
   // つまり中心間距離 = r0 + r1 - overlap、overlapは小さい方の半径の30%まで
   function getPositions(radii) {
-    const n=radii.length;
-    if(n===1) return [{x:cx,y:cy}];
-    if(n===2){
-      const r0=radii[0],r1=radii[1];
-      const dist=r0+r1+2; // 完全に離す
-      return [{x:cx-dist*(r1/(r0+r1)),y:cy},{x:cx+dist*(r0/(r0+r1)),y:cy}];
+    const n = radii.length;
+    if (n === 1) return [{x: cx, y: cy}];
+
+    function score(i) {
+      const w = ANIM_PARAMS[activeRecs[i].type]?.weight ?? 0;
+      return w + radii[i] * 0.005;
     }
-    // 3つ：三角形配置、完全に離す
-    const r0=radii[0],r1=radii[1],r2=radii[2];
-    const d01=r0+r1+2;
-    const d02=r0+r2+2;
-    const d12=r1+r2+2;
-    // コサイン定理で三角形の頂点を計算
-    const cosA = (d01*d01+d02*d02-d12*d12)/(2*d01*d02);
-    const sinA = Math.sqrt(Math.max(0,1-cosA*cosA));
-    return [
-      {x:cx,           y:cy-d02*sinA*0.6},
-      {x:cx-d01*0.5,   y:cy+d02*sinA*0.4},
-      {x:cx+d01*0.5,   y:cy+d02*sinA*0.4},
-    ];
+
+    const blobR = R - 5;
+
+    if (n === 2) {
+      const sorted = [0,1].map(i=>({i,s:score(i)})).sort((a,b)=>a.s-b.s);
+      const ti=sorted[0].i, bi=sorted[1].i;
+      const rt=radii[ti], rb=radii[bi];
+      const s = blobR / (rt + rb); // 2つが接してぷにょ内に収まる最大スケール
+      const pos=[null,null];
+      pos[ti]={x:cx, y:cy - rb*s};
+      pos[bi]={x:cx, y:cy + rt*s};
+      return pos;
+    }
+
+    // 3つ：大きい順にソート
+    const bySize = [0,1,2].map(i=>({i,r:radii[i],s:score(i)})).sort((a,b)=>b.r-a.r);
+    const big=bySize[0].i, sm1=bySize[1].i, sm2=bySize[2].i;
+    const rBig=radii[big], rS1=radii[sm1], rS2=radii[sm2];
+
+    // ステップ1：小さい2つをくっつける（横並び）
+    // sm1とsm2の中心間距離 = rS1+rS2
+    // sm1を左、sm2を右（スコアが低い方を上にするため縦でも可）
+    // スコアで並び順決定：軽い方を上
+    const scoreS1=score(sm1), scoreS2=score(sm2);
+    const scoreBig=score(big);
+
+    // 小さい2つの配置（互いに接触）
+    const dSmall = rS1 + rS2;
+
+    // 大きいボールと小さい2つのグループの位置関係
+    // 大きいボールの中心から小さいグループ全体の中心までの距離
+    // 小さいグループの「重心」= (sm1中心 + sm2中心) / 2
+    // sm1中心 = (-rS2, 0)、sm2中心 = (rS1, 0) → 重心 = ((rS1-rS2)/2, 0)
+    // 大きいボールとsm1の接触距離 = rBig+rS1
+    // 大きいボールとsm2の接触距離 = rBig+rS2
+
+    // 大きいボールを下中央、sm1を上左、sm2を上右に配置
+    // big中心=(0, yBig), sm1中心=(-rS2, ySmall), sm2中心=(rS1, ySmall)
+    // big-sm1接触: sqrt(rS2^2 + (yBig-ySmall)^2) = rBig+rS1
+    // → (yBig-ySmall)^2 = (rBig+rS1)^2 - rS2^2
+    const dy2 = (rBig+rS1)*(rBig+rS1) - rS2*rS2;
+    const dy = Math.sqrt(Math.max(0, dy2));
+
+    // スコアで上下を決定
+    // bigのスコアが高い（重い）→ 下、小さい2つが上
+    let rawBig, rawS1, rawS2;
+    if (scoreBig >= Math.max(scoreS1, scoreS2)) {
+      // bigが一番重い → 下
+      rawBig = {x:0,    y: dy * (rS1/(rBig+rS1))};
+      rawS1  = {x:-rS2, y:-dy * (rBig/(rBig+rS1))};
+      rawS2  = {x: rS1, y:-dy * (rBig/(rBig+rS1))};
+    } else {
+      // bigが一番軽い → 上
+      rawBig = {x:0,    y:-dy * (rS1/(rBig+rS1))};
+      rawS1  = {x:-rS2, y: dy * (rBig/(rBig+rS1))};
+      rawS2  = {x: rS1, y: dy * (rBig/(rBig+rS1))};
+    }
+
+    // バウンディングボックス中心をぷにょ中心に
+    const pts = [{p:rawBig,r:rBig},{p:rawS1,r:rS1},{p:rawS2,r:rS2}];
+    const xs = pts.map(e=>e.p.x), ys = pts.map(e=>e.p.y);
+    const bcx=(Math.min(...xs)+Math.max(...xs))/2;
+    const bcy=(Math.min(...ys)+Math.max(...ys))/2;
+    pts.forEach(e=>{e.p.x-=bcx; e.p.y-=bcy;});
+
+    // ぷにょ内に収まるスケール
+    let s=Infinity;
+    pts.forEach(({p,r})=>{
+      const d=Math.sqrt(p.x*p.x+p.y*p.y);
+      s=Math.min(s, blobR/(d+r));
+    });
+
+    const pos=[null,null,null];
+    pos[big]={x:cx+rawBig.x*s, y:cy+rawBig.y*s};
+    pos[sm1]={x:cx+rawS1.x*s,  y:cy+rawS1.y*s};
+    pos[sm2]={x:cx+rawS2.x*s,  y:cy+rawS2.y*s};
+    return pos;
+  }
+
+  // 全ボールがぷにょ内に収まるようにスケール調整し、中心をぷにょ中心に合わせる
+  function fitInBlob(rawPos, radii) {
+    const n = rawPos.length;
+    // 外接矩形の中心を原点に
+    const xs = rawPos.map(p=>p.x), ys = rawPos.map(p=>p.y);
+    const bboxCX = (Math.min(...xs)+Math.max(...xs))/2;
+    const bboxCY = (Math.min(...ys)+Math.max(...ys))/2;
+    const centered = rawPos.map(p=>({x:p.x-bboxCX, y:p.y-bboxCY}));
+
+    // 各ボールがぷにょ(半径R=69)内に収まる最大スケールを求める
+    // ボールiの中心(x,y)、半径r_i → sqrt((x*s)^2+(y*s)^2) + r_i*s <= R
+    // s * sqrt(x^2+y^2) + s*r_i <= R → s <= R / (sqrt(x^2+y^2)+r_i)
+    let maxScale = 1.0;
+    centered.forEach((p,i)=>{
+      const dist = Math.sqrt(p.x*p.x+p.y*p.y);
+      const maxS = (R-2) / (dist + radii[i]); // 2px余白
+      if(maxS < maxScale) maxScale = maxS;
+    });
+    // スケールを適用してぷにょ中心に配置
+    return centered.map(p=>({
+      x: cx + p.x*maxScale,
+      y: cy + p.y*maxScale
+    }));
   }
 
   const positions = getPositions(radii);
@@ -688,26 +921,115 @@ function updateEmotionLabels() {
   const radii=activeRecs.map(rec=>Math.max(8, R*Math.sqrt(rec.percent/100)*0.88));
 
   function getPositions(radii) {
-    const n=radii.length;
-    if(n===1) return [{x:cx,y:cy}];
-    if(n===2){
-      const r0=radii[0],r1=radii[1];
-      const dist=r0+r1+2; // 完全に離す
-      return [{x:cx-dist*(r1/(r0+r1)),y:cy},{x:cx+dist*(r0/(r0+r1)),y:cy}];
+    const n = radii.length;
+    if (n === 1) return [{x: cx, y: cy}];
+
+    function score(i) {
+      const w = ANIM_PARAMS[activeRecs[i].type]?.weight ?? 0;
+      return w + radii[i] * 0.005;
     }
-    // 3つ：三角形配置、完全に離す
-    const r0=radii[0],r1=radii[1],r2=radii[2];
-    const d01=r0+r1+2;
-    const d02=r0+r2+2;
-    const d12=r1+r2+2;
-    // コサイン定理で三角形の頂点を計算
-    const cosA = (d01*d01+d02*d02-d12*d12)/(2*d01*d02);
-    const sinA = Math.sqrt(Math.max(0,1-cosA*cosA));
-    return [
-      {x:cx,           y:cy-d02*sinA*0.6},
-      {x:cx-d01*0.5,   y:cy+d02*sinA*0.4},
-      {x:cx+d01*0.5,   y:cy+d02*sinA*0.4},
-    ];
+
+    const blobR = R - 5;
+
+    if (n === 2) {
+      const sorted = [0,1].map(i=>({i,s:score(i)})).sort((a,b)=>a.s-b.s);
+      const ti=sorted[0].i, bi=sorted[1].i;
+      const rt=radii[ti], rb=radii[bi];
+      const s = blobR / (rt + rb); // 2つが接してぷにょ内に収まる最大スケール
+      const pos=[null,null];
+      pos[ti]={x:cx, y:cy - rb*s};
+      pos[bi]={x:cx, y:cy + rt*s};
+      return pos;
+    }
+
+    // 3つ：大きい順にソート
+    const bySize = [0,1,2].map(i=>({i,r:radii[i],s:score(i)})).sort((a,b)=>b.r-a.r);
+    const big=bySize[0].i, sm1=bySize[1].i, sm2=bySize[2].i;
+    const rBig=radii[big], rS1=radii[sm1], rS2=radii[sm2];
+
+    // ステップ1：小さい2つをくっつける（横並び）
+    // sm1とsm2の中心間距離 = rS1+rS2
+    // sm1を左、sm2を右（スコアが低い方を上にするため縦でも可）
+    // スコアで並び順決定：軽い方を上
+    const scoreS1=score(sm1), scoreS2=score(sm2);
+    const scoreBig=score(big);
+
+    // 小さい2つの配置（互いに接触）
+    const dSmall = rS1 + rS2;
+
+    // 大きいボールと小さい2つのグループの位置関係
+    // 大きいボールの中心から小さいグループ全体の中心までの距離
+    // 小さいグループの「重心」= (sm1中心 + sm2中心) / 2
+    // sm1中心 = (-rS2, 0)、sm2中心 = (rS1, 0) → 重心 = ((rS1-rS2)/2, 0)
+    // 大きいボールとsm1の接触距離 = rBig+rS1
+    // 大きいボールとsm2の接触距離 = rBig+rS2
+
+    // 大きいボールを下中央、sm1を上左、sm2を上右に配置
+    // big中心=(0, yBig), sm1中心=(-rS2, ySmall), sm2中心=(rS1, ySmall)
+    // big-sm1接触: sqrt(rS2^2 + (yBig-ySmall)^2) = rBig+rS1
+    // → (yBig-ySmall)^2 = (rBig+rS1)^2 - rS2^2
+    const dy2 = (rBig+rS1)*(rBig+rS1) - rS2*rS2;
+    const dy = Math.sqrt(Math.max(0, dy2));
+
+    // スコアで上下を決定
+    // bigのスコアが高い（重い）→ 下、小さい2つが上
+    let rawBig, rawS1, rawS2;
+    if (scoreBig >= Math.max(scoreS1, scoreS2)) {
+      // bigが一番重い → 下
+      rawBig = {x:0,    y: dy * (rS1/(rBig+rS1))};
+      rawS1  = {x:-rS2, y:-dy * (rBig/(rBig+rS1))};
+      rawS2  = {x: rS1, y:-dy * (rBig/(rBig+rS1))};
+    } else {
+      // bigが一番軽い → 上
+      rawBig = {x:0,    y:-dy * (rS1/(rBig+rS1))};
+      rawS1  = {x:-rS2, y: dy * (rBig/(rBig+rS1))};
+      rawS2  = {x: rS1, y: dy * (rBig/(rBig+rS1))};
+    }
+
+    // バウンディングボックス中心をぷにょ中心に
+    const pts = [{p:rawBig,r:rBig},{p:rawS1,r:rS1},{p:rawS2,r:rS2}];
+    const xs = pts.map(e=>e.p.x), ys = pts.map(e=>e.p.y);
+    const bcx=(Math.min(...xs)+Math.max(...xs))/2;
+    const bcy=(Math.min(...ys)+Math.max(...ys))/2;
+    pts.forEach(e=>{e.p.x-=bcx; e.p.y-=bcy;});
+
+    // ぷにょ内に収まるスケール
+    let s=Infinity;
+    pts.forEach(({p,r})=>{
+      const d=Math.sqrt(p.x*p.x+p.y*p.y);
+      s=Math.min(s, blobR/(d+r));
+    });
+
+    const pos=[null,null,null];
+    pos[big]={x:cx+rawBig.x*s, y:cy+rawBig.y*s};
+    pos[sm1]={x:cx+rawS1.x*s,  y:cy+rawS1.y*s};
+    pos[sm2]={x:cx+rawS2.x*s,  y:cy+rawS2.y*s};
+    return pos;
+  }
+
+  // 全ボールがぷにょ内に収まるようにスケール調整し、中心をぷにょ中心に合わせる
+  function fitInBlob(rawPos, radii) {
+    const n = rawPos.length;
+    // 外接矩形の中心を原点に
+    const xs = rawPos.map(p=>p.x), ys = rawPos.map(p=>p.y);
+    const bboxCX = (Math.min(...xs)+Math.max(...xs))/2;
+    const bboxCY = (Math.min(...ys)+Math.max(...ys))/2;
+    const centered = rawPos.map(p=>({x:p.x-bboxCX, y:p.y-bboxCY}));
+
+    // 各ボールがぷにょ(半径R=69)内に収まる最大スケールを求める
+    // ボールiの中心(x,y)、半径r_i → sqrt((x*s)^2+(y*s)^2) + r_i*s <= R
+    // s * sqrt(x^2+y^2) + s*r_i <= R → s <= R / (sqrt(x^2+y^2)+r_i)
+    let maxScale = 1.0;
+    centered.forEach((p,i)=>{
+      const dist = Math.sqrt(p.x*p.x+p.y*p.y);
+      const maxS = (R-2) / (dist + radii[i]); // 2px余白
+      if(maxS < maxScale) maxScale = maxS;
+    });
+    // スケールを適用してぷにょ中心に配置
+    return centered.map(p=>({
+      x: cx + p.x*maxScale,
+      y: cy + p.y*maxScale
+    }));
   }
 
   const positions=getPositions(radii);
@@ -763,7 +1085,10 @@ function updateButtonStates() {
       // タップで編集
       btn.onclick = () => {
         const idx = records.findIndex(r => r.emotion === btn.dataset.emotion);
-        if (idx >= 0) startEditing(idx);
+        if (idx >= 0) {
+          startEditing(idx);
+          setBlobAnimation(btn.dataset.type);
+        }
       };
     }
   });
@@ -781,6 +1106,7 @@ function startEditing(index) {
   percentSlider.value=rec.percent;percentValue.textContent=rec.percent+'%';
   blob.className='blob '+rec.type;
   updateSliderMax();checkReady();
+resetBlobAnimation();
 
 // ── 目盛りSVG描画 ──
 function drawTicks() {
@@ -837,7 +1163,6 @@ function resetInput() {
   selectedColor=null;selectedEmotion=null;selectedType=null;selectedPercent=50;editingIndex=-1;
   percentSlider.value=50;percentValue.textContent='50%';
   swatch.style.background='#888';  document.querySelectorAll('.emotion-btn').forEach(b=>{b.classList.remove('active');b.style.background='rgba(255,255,255,0.06)';b.style.color='rgba(255,255,255,0.7)';});
-  blob.className='blob';
   document.querySelectorAll('.emotion-btn').forEach(b=>{
     const rec=records.find(r=>r.emotion===b.dataset.emotion);
     if(!rec){
@@ -848,6 +1173,7 @@ function resetInput() {
     }
   });
   updateEmotionLabels();updateButtons();updateSliderMax();checkReady();
+resetBlobAnimation();
 
 // ── 目盛りSVG描画 ──
 function drawTicks() {
@@ -895,7 +1221,7 @@ function showModal() {
       <span class="modal-pct">${rec.percent}%　${rec.color.toUpperCase()}</span></div>`;
     el.addEventListener('click',()=>{
       records[i]=pendingRecord;pendingRecord=null;
-      updateColorIslands();updateEmotionLabels();renderRecords();resetInput();hideModal();
+      updateColorIslands();updateEmotionLabels();renderRecords();resetInput();updateBlobAnimation();hideModal();
     });
     modalRecordsEl.appendChild(el);
   });
@@ -910,6 +1236,7 @@ applyBtn.addEventListener('click',()=>{
 });
 
 updateSliderMax();checkReady();
+resetBlobAnimation();
 
 // ── 目盛りSVG描画 ──
 function drawTicks() {
@@ -990,26 +1317,115 @@ function makeBlobSvg(recs) {
   const radii = activeRecs.map(rec=>Math.max(8, R*Math.sqrt(rec.percent/100)*0.88));
 
   function getPositions(radii) {
-    const n=radii.length;
-    if(n===1) return [{x:cx,y:cy}];
-    if(n===2){
-      const r0=radii[0],r1=radii[1];
-      const dist=r0+r1+2; // 完全に離す
-      return [{x:cx-dist*(r1/(r0+r1)),y:cy},{x:cx+dist*(r0/(r0+r1)),y:cy}];
+    const n = radii.length;
+    if (n === 1) return [{x: cx, y: cy}];
+
+    function score(i) {
+      const w = ANIM_PARAMS[activeRecs[i].type]?.weight ?? 0;
+      return w + radii[i] * 0.005;
     }
-    // 3つ：三角形配置、完全に離す
-    const r0=radii[0],r1=radii[1],r2=radii[2];
-    const d01=r0+r1+2;
-    const d02=r0+r2+2;
-    const d12=r1+r2+2;
-    // コサイン定理で三角形の頂点を計算
-    const cosA = (d01*d01+d02*d02-d12*d12)/(2*d01*d02);
-    const sinA = Math.sqrt(Math.max(0,1-cosA*cosA));
-    return [
-      {x:cx,           y:cy-d02*sinA*0.6},
-      {x:cx-d01*0.5,   y:cy+d02*sinA*0.4},
-      {x:cx+d01*0.5,   y:cy+d02*sinA*0.4},
-    ];
+
+    const blobR = R - 5;
+
+    if (n === 2) {
+      const sorted = [0,1].map(i=>({i,s:score(i)})).sort((a,b)=>a.s-b.s);
+      const ti=sorted[0].i, bi=sorted[1].i;
+      const rt=radii[ti], rb=radii[bi];
+      const s = blobR / (rt + rb); // 2つが接してぷにょ内に収まる最大スケール
+      const pos=[null,null];
+      pos[ti]={x:cx, y:cy - rb*s};
+      pos[bi]={x:cx, y:cy + rt*s};
+      return pos;
+    }
+
+    // 3つ：大きい順にソート
+    const bySize = [0,1,2].map(i=>({i,r:radii[i],s:score(i)})).sort((a,b)=>b.r-a.r);
+    const big=bySize[0].i, sm1=bySize[1].i, sm2=bySize[2].i;
+    const rBig=radii[big], rS1=radii[sm1], rS2=radii[sm2];
+
+    // ステップ1：小さい2つをくっつける（横並び）
+    // sm1とsm2の中心間距離 = rS1+rS2
+    // sm1を左、sm2を右（スコアが低い方を上にするため縦でも可）
+    // スコアで並び順決定：軽い方を上
+    const scoreS1=score(sm1), scoreS2=score(sm2);
+    const scoreBig=score(big);
+
+    // 小さい2つの配置（互いに接触）
+    const dSmall = rS1 + rS2;
+
+    // 大きいボールと小さい2つのグループの位置関係
+    // 大きいボールの中心から小さいグループ全体の中心までの距離
+    // 小さいグループの「重心」= (sm1中心 + sm2中心) / 2
+    // sm1中心 = (-rS2, 0)、sm2中心 = (rS1, 0) → 重心 = ((rS1-rS2)/2, 0)
+    // 大きいボールとsm1の接触距離 = rBig+rS1
+    // 大きいボールとsm2の接触距離 = rBig+rS2
+
+    // 大きいボールを下中央、sm1を上左、sm2を上右に配置
+    // big中心=(0, yBig), sm1中心=(-rS2, ySmall), sm2中心=(rS1, ySmall)
+    // big-sm1接触: sqrt(rS2^2 + (yBig-ySmall)^2) = rBig+rS1
+    // → (yBig-ySmall)^2 = (rBig+rS1)^2 - rS2^2
+    const dy2 = (rBig+rS1)*(rBig+rS1) - rS2*rS2;
+    const dy = Math.sqrt(Math.max(0, dy2));
+
+    // スコアで上下を決定
+    // bigのスコアが高い（重い）→ 下、小さい2つが上
+    let rawBig, rawS1, rawS2;
+    if (scoreBig >= Math.max(scoreS1, scoreS2)) {
+      // bigが一番重い → 下
+      rawBig = {x:0,    y: dy * (rS1/(rBig+rS1))};
+      rawS1  = {x:-rS2, y:-dy * (rBig/(rBig+rS1))};
+      rawS2  = {x: rS1, y:-dy * (rBig/(rBig+rS1))};
+    } else {
+      // bigが一番軽い → 上
+      rawBig = {x:0,    y:-dy * (rS1/(rBig+rS1))};
+      rawS1  = {x:-rS2, y: dy * (rBig/(rBig+rS1))};
+      rawS2  = {x: rS1, y: dy * (rBig/(rBig+rS1))};
+    }
+
+    // バウンディングボックス中心をぷにょ中心に
+    const pts = [{p:rawBig,r:rBig},{p:rawS1,r:rS1},{p:rawS2,r:rS2}];
+    const xs = pts.map(e=>e.p.x), ys = pts.map(e=>e.p.y);
+    const bcx=(Math.min(...xs)+Math.max(...xs))/2;
+    const bcy=(Math.min(...ys)+Math.max(...ys))/2;
+    pts.forEach(e=>{e.p.x-=bcx; e.p.y-=bcy;});
+
+    // ぷにょ内に収まるスケール
+    let s=Infinity;
+    pts.forEach(({p,r})=>{
+      const d=Math.sqrt(p.x*p.x+p.y*p.y);
+      s=Math.min(s, blobR/(d+r));
+    });
+
+    const pos=[null,null,null];
+    pos[big]={x:cx+rawBig.x*s, y:cy+rawBig.y*s};
+    pos[sm1]={x:cx+rawS1.x*s,  y:cy+rawS1.y*s};
+    pos[sm2]={x:cx+rawS2.x*s,  y:cy+rawS2.y*s};
+    return pos;
+  }
+
+  // 全ボールがぷにょ内に収まるようにスケール調整し、中心をぷにょ中心に合わせる
+  function fitInBlob(rawPos, radii) {
+    const n = rawPos.length;
+    // 外接矩形の中心を原点に
+    const xs = rawPos.map(p=>p.x), ys = rawPos.map(p=>p.y);
+    const bboxCX = (Math.min(...xs)+Math.max(...xs))/2;
+    const bboxCY = (Math.min(...ys)+Math.max(...ys))/2;
+    const centered = rawPos.map(p=>({x:p.x-bboxCX, y:p.y-bboxCY}));
+
+    // 各ボールがぷにょ(半径R=69)内に収まる最大スケールを求める
+    // ボールiの中心(x,y)、半径r_i → sqrt((x*s)^2+(y*s)^2) + r_i*s <= R
+    // s * sqrt(x^2+y^2) + s*r_i <= R → s <= R / (sqrt(x^2+y^2)+r_i)
+    let maxScale = 1.0;
+    centered.forEach((p,i)=>{
+      const dist = Math.sqrt(p.x*p.x+p.y*p.y);
+      const maxS = (R-2) / (dist + radii[i]); // 2px余白
+      if(maxS < maxScale) maxScale = maxS;
+    });
+    // スケールを適用してぷにょ中心に配置
+    return centered.map(p=>({
+      x: cx + p.x*maxScale,
+      y: cy + p.y*maxScale
+    }));
   }
 
   const positions = getPositions(radii);
