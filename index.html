@@ -7,24 +7,24 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html, body {
-    width: 100%;
+  html {
     height: 100%;
-    overflow: hidden;
+    background: radial-gradient(ellipse at center, #0d4a5a 0%, #072838 55%, #041820 100%);
   }
   body {
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
     background: radial-gradient(ellipse at center, #0d4a5a 0%, #072838 55%, #041820 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     font-family: 'Hiragino Sans', sans-serif;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     gap: 0;
-    /* iOS Safari対応 */
-    min-height: -webkit-fill-available;
+    padding-bottom: 70px;
   }
 
   /* ── 球体 ── */
@@ -84,8 +84,9 @@
     gap: 7px;
     width: 100%;
   }
+  .emotion-buttons > .emotion-btn { width: 100%; }
   .emotion-btn {
-    padding: 9px 0;
+    padding: 7px 0;
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 18px;
     background: rgba(255,255,255,0.06);
@@ -95,10 +96,27 @@
     transition: all .2s ease;
     text-align: center;
     font-family: 'Hiragino Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-height: 44px;
+    justify-content: center;
+  }
+  .emotion-btn .btn-code {
+    font-size: 9px;
+    opacity: 0.6;
+    letter-spacing: .03em;
+    display: none;
+  }
+  .emotion-btn.active .btn-code {
+    display: block;
   }
   .emotion-btn:hover:not(:disabled){background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.4)}
   .emotion-btn.active{color:#fff;border-color:rgba(255,255,255,.4);font-weight:bold}
   .emotion-btn.hidden{display:none}
+  .emotion-btn-wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .btn-color-code { font-size: 9px; color: rgba(255,255,255,0.5); letter-spacing: .04em; height: 12px; }
 
   .more-btn{
     background:none;border:none;color:rgba(255,255,255,.45);
@@ -121,18 +139,25 @@
   .color-code{display:none}
 
   /* ── %スライダー ── */
-  .percent-row{display:flex;align-items:center;gap:8px;width:100%}
+  .percent-row{display:flex;align-items:center;gap:8px;width:100%;}
   .percent-label{color:rgba(255,255,255,.5);font-size:14px;white-space:nowrap}
   .percent-slider{
-    flex:1;-webkit-appearance:none;height:3px;
-    border-radius:2px;background:rgba(255,255,255,.2);outline:none;
+    flex:1;-webkit-appearance:none;height:5px;
+    border-radius:3px;background:rgba(255,255,255,.25);outline:none;
+    margin:0;
   }
   .percent-slider::-webkit-slider-thumb{
-    -webkit-appearance:none;width:16px;height:16px;
-    border-radius:50%;background:rgba(255,255,255,.8);cursor:pointer;
+    -webkit-appearance:none;width:20px;height:20px;
+    border-radius:50%;background:rgba(255,255,255,.9);cursor:pointer;
+    margin-top:-8px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.3);
+  }
+  .percent-slider::-webkit-slider-runnable-track{
+    height:5px;border-radius:3px;background:rgba(255,255,255,.25);
   }
   .percent-value{color:#fff;font-size:16px;font-weight:bold;width:48px;text-align:right}
   .percent-remain{color:rgba(255,255,255,.4);font-size:13px;text-align:center}
+
 
   /* ── 入れるボタン ── */
   .apply-btn{
@@ -144,35 +169,7 @@
   .apply-btn.ready{background:rgba(255,255,255,.18);color:#fff;cursor:pointer}
   .apply-btn.ready:hover{background:rgba(255,255,255,.28)}
 
-  /* ── 記録エリア（高さ固定・絶対位置） ── */
-  /* bodyの最後の子として常に同じ場所に */
-  .records-area {
-    flex-shrink: 0;
-    width: 83vw;
-    max-width: 400px;
-    min-height: 96px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 6px;
-    margin-top: 6px;
-  }
 
-  .record-item{
-    display:flex;flex-direction:column;align-items:center;gap:4px;
-    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-    border-radius:14px;padding:8px 12px;min-width:80px;
-    cursor:pointer;transition:all .2s;
-  }
-  .record-item:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3)}
-  .record-item.editing{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.18)}
-  .record-swatch{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3)}
-  .record-emotion{color:rgba(255,255,255,.8);font-size:14px}
-  .record-pct{color:rgba(255,255,255,.5);font-size:13px}
-  .record-code{color:rgba(255,255,255,.35);font-size:10px;letter-spacing:.05em}
-  .record-edit{color:rgba(255,255,255,.3);font-size:10px}
 
   /* ── モーダル ── */
   .modal-overlay{
@@ -210,9 +207,9 @@
     bottom: 0; left: 0;
     width: 100%;
     display: flex;
-    background: rgba(4,24,32,0.95);
+    background: rgba(4,24,32,0.98);
     border-top: 1px solid rgba(255,255,255,0.1);
-    z-index: 50;
+    z-index: 100;
   }
   .tab-btn {
     flex: 1;
@@ -220,21 +217,22 @@
     background: none;
     border: none;
     color: rgba(255,255,255,0.4);
-    font-size: 11px;
+    font-size: 15px;
     font-family: 'Hiragino Sans', sans-serif;
     cursor: pointer;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 3px;
+    justify-content: center;
+    gap: 6px;
     transition: color .2s;
   }
   .tab-btn.active { color: #40D8B0; }
   .tab-btn .tab-icon { font-size: 18px; }
 
   /* ── 各画面 ── */
-  .screen { display: none; width: 100%; padding-bottom: 60px; }
-  .screen.active { display: block; }
+  .screen { display: none; width: 100%; padding-bottom: 60px; display: none; flex-direction: column; align-items: center; }
+  .screen.active { display: flex; }
 
   /* ── このツールについて ── */
   .about-screen {
@@ -280,36 +278,31 @@
   }
   .history-day {
     margin-bottom: 20px;
-  }
-  .history-date {
-    color: rgba(255,255,255,0.5);
-    font-size: 12px;
-    margin-bottom: 8px;
-    letter-spacing: .05em;
-  }
-  .history-records {
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
   }
-  .history-record {
+  .history-date-block {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    background: rgba(255,255,255,.07);
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 12px;
-    padding: 8px 12px;
-    min-width: 72px;
+    gap: 2px;
+    min-width: 80px;
   }
-  .history-swatch {
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(255,255,255,.3);
+  .history-date-year {
+    color: rgba(255,255,255,0.35);
+    font-size: 11px;
+    display: inline;
   }
-  .history-emotion { color: rgba(255,255,255,.8); font-size: 13px; }
-  .history-pct { color: rgba(255,255,255,.5); font-size: 12px; }
+  .history-date-day {
+    color: rgba(255,255,255,0.75);
+    font-size: 15px;
+    font-weight: bold;
+  }
+  .history-date-time {
+    color: rgba(255,255,255,0.4);
+    font-size: 12px;
+  }
+
 </style>
 </head>
 <body>
@@ -319,15 +312,15 @@
   <button class="tab-btn active" onclick="switchTab('tool')">
     <span class="tab-icon">🫧</span>
     <span>今日</span>
-  </button>
-  <button class="tab-btn" onclick="switchTab('about')">
-    <span class="tab-icon">📖</span>
-    <span>このツールについて</span>
-  </button>
+  <span class="btn-code"></span></button>
   <button class="tab-btn" onclick="switchTab('history')">
     <span class="tab-icon">🗓</span>
-    <span>過去の記録</span>
-  </button>
+    <span>メモリー</span>
+  <span class="btn-code"></span></button>
+  <button class="tab-btn" onclick="switchTab('about')">
+    <span class="tab-icon">📖</span>
+    <span>ぷにょとは</span>
+  <span class="btn-code"></span></button>
 </div>
 
 <!-- ツール画面 -->
@@ -382,26 +375,25 @@
 <!-- 入力エリア -->
 <div class="input-area">
   <div class="emotion-buttons" id="emotionButtons">
-    <button class="emotion-btn" data-emotion="嬉しい" data-type="joy">嬉しい</button>
-    <button class="emotion-btn" data-emotion="楽しい" data-type="joy">楽しい</button>
-    <button class="emotion-btn" data-emotion="好き" data-type="joy">好き</button>
-    <button class="emotion-btn" data-emotion="穏やか" data-type="calm">穏やか</button>
-    <button class="emotion-btn" data-emotion="悲しい" data-type="sad">悲しい</button>
-    <button class="emotion-btn" data-emotion="イライラ" data-type="angry">イライラ</button>
-    <button class="emotion-btn" data-emotion="不安" data-type="angry">不安</button>
-    <button class="emotion-btn" data-emotion="疲れた" data-type="sad">疲れた</button>
+    <button class="emotion-btn" data-emotion="嬉しい" data-type="joy">嬉しい<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="楽しい" data-type="joy">楽しい<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="悲しい" data-type="sad">悲しい<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="イライラ" data-type="angry">イライラ<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="好き" data-type="joy">好き<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="穏やか" data-type="calm">穏やか<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="不安" data-type="angry">不安<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="疲れた" data-type="sad">疲れた<span class="btn-code"></span></button>
   </div>
-  <button class="more-btn" id="moreBtn">もっと見る ▾</button>
+  <button class="more-btn" id="moreBtn">もっと見る ▾<span class="btn-code"></span></button>
   <div class="emotion-buttons" id="moreEmotions" style="display:none;">
-    <button class="emotion-btn" data-emotion="怒り" data-type="angry">怒り</button>
-    <button class="emotion-btn" data-emotion="モヤモヤ" data-type="sad">モヤモヤ</button>
-    <button class="emotion-btn" data-emotion="しんどい" data-type="sad">しんどい</button>
-    <button class="emotion-btn" data-emotion="嫌い" data-type="angry">嫌い</button>
-    <button class="emotion-btn" data-emotion="退屈" data-type="sad">退屈</button>
-    <button class="emotion-btn" data-emotion="ワクワク" data-type="joy">ワクワク</button>
-    <button class="emotion-btn" data-emotion="ありがたい" data-type="calm">ありがたい</button>
-    <button class="emotion-btn" data-emotion="興味深い" data-type="calm">興味深い</button>
-    <button class="emotion-btn" data-emotion="スッキリ" data-type="joy">スッキリ</button>
+    <button class="emotion-btn" data-emotion="ワクワク" data-type="joy">ワクワク<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="ありがたい" data-type="calm">ありがたい<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="怒り" data-type="angry">怒り<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="モヤモヤ" data-type="sad">モヤモヤ<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="興味深い" data-type="calm">興味深い<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="スッキリ" data-type="joy">スッキリ<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="しんどい" data-type="sad">しんどい<span class="btn-code"></span></button>
+    <button class="emotion-btn" data-emotion="嫌" data-type="angry">嫌<span class="btn-code"></span></button>
   </div>
 
   <canvas id="colorCanvas" width="580" height="230"></canvas>
@@ -412,13 +404,14 @@
     <input type="range" class="percent-slider" id="percentSlider" min="0" max="100" value="50">
     <span class="percent-value" id="percentValue">50%</span>
   </div>
+  <div class="slider-ticks">
+    <svg id="tickSvg" width="100%" height="16" style="display:block;"></svg>
+  </div>
   <span class="percent-remain" id="percentRemain">残り 100%</span>
 
-  <button class="apply-btn" id="applyBtn">言葉＋色を入れる。</button>
+  <button class="apply-btn" id="applyBtn">言葉＋色を入れる。<span class="btn-code"></span></button>
 </div>
 
-<!-- 記録エリア（高さ固定・常にここにある） -->
-<div class="records-area" id="records"></div>
 
 </div><!-- /screen-tool -->
 
@@ -426,15 +419,18 @@
 <div class="screen" id="screen-about">
 <div class="about-screen">
   <h2>概要</h2>
-  <p>透明なぷにょ球体が、あなたの心の分身。言葉と色を入れると、球体が変化する。</p>
+  <p>透明なぷにょ球体が、あなたの心の分身です。そこに言葉と色を入れると、球体がその感情に応じて変化します<span style="color:rgba(255,255,255,0.4);font-size:12px;">*</span>。自分の感じたことを自分なりに表現するためのツールです。</p>
+  <p style="color:rgba(255,255,255,0.35);font-size:12px;">*開発予定</p>
   <hr class="about-divider">
   <h2>使い方</h2>
-  <p>感情の言葉を選び、カラーパネルで「自分にとってのその色」を直感で選ぶ。割合（%）も自分の感覚で決めてOK。3つまで記録できます。正解はありません。</p>
+  <p>感情の言葉を選び、カラーパネルで「自分にとってのその色」を直感で選ぶ。その感情の割合（%）も自分の感覚で決めてOK。3つまで記録できます。正解はありません。</p>
   <hr class="about-divider">
   <h2>開発背景</h2>
-  <p>ウェルビーイングは、他者が測れるものではありません。自分の納得感こそが重要です。</p>
-  <p>感情処理と言語化の回路のつながりが薄い人、特に「今日どうだった？」と聞かれて「別に」で終わらせてしまう人は多い。それは弱さではなく、脳の仕様です。</p>
-  <p>測るのではなく、表現する。</p>
+  <p>ウェルビーイングは、他者が測れるものではありません。自分の納得感こそが重要です。それを数値やスコアに置き換えた瞬間、それは誰かの曖昧な基準になってしまうだけです。自分の幸せの実感は、自分にしかわからない。そこでこのツールを開発しました。</p>
+  <hr class="about-divider">
+  <h2>自分との対話 ≒ 世界との対話</h2>
+  <p>感情処理と言語化の回路のつながりが薄い人、特に「今日どうだった？」と聞かれて「別に」で終わらせてしまう人は多い。それは弱さではなく、脳の仕様です。でもそれが続くと、自分でも自分の状態がわからなくなっていく。</p>
+  <p>このツールは「怒り=赤」のような既存の記号を使わず、今日の自分にとっての感じたものが何色か・どんな言葉かを、直感的に選ぶだけです。測るのではなく、表現する。その積み重ねが、自分との対話になります。</p>
   <hr class="about-divider">
   <p style="color:rgba(255,255,255,0.35);font-size:13px;">Proto's out 2026.4.2</p>
 </div>
@@ -453,7 +449,7 @@
   <div class="modal">
     <p class="modal-title">どれを変えますか？</p>
     <div class="modal-records" id="modalRecords"></div>
-    <button class="modal-cancel" id="modalCancel">やめる</button>
+    <button class="modal-cancel" id="modalCancel">やめる<span class="btn-code"></span></button>
   </div>
 </div>
 
@@ -461,13 +457,12 @@
 const blob = document.getElementById('blob');
 const canvas = document.getElementById('colorCanvas');
 const ctx = canvas.getContext('2d');
-const swatch = document.getElementById('colorSwatch');
-const codeEl = document.getElementById('colorCode');
+const swatch = document.getElementById('colorSwatch') || {style:{}};
 const applyBtn = document.getElementById('applyBtn');
 const percentSlider = document.getElementById('percentSlider');
 const percentValue = document.getElementById('percentValue');
 const percentRemain = document.getElementById('percentRemain');
-const recordsEl = document.getElementById('records');
+const recordsEl = document.getElementById('records') || {innerHTML:''};
 const modalOverlay = document.getElementById('modalOverlay');
 const modalRecordsEl = document.getElementById('modalRecords');
 const modalCancel = document.getElementById('modalCancel');
@@ -484,20 +479,16 @@ let editingIndex = -1;
 // カラーパネル
 function drawPanel() {
   const w = canvas.width, h = canvas.height;
+  // 横軸：色相、縦軸：上=白→中=原色→下=黒
   for (let x = 0; x < w; x++) {
     const hue = (x / w) * 360;
-    const grad = ctx.createLinearGradient(0,0,0,h);
-    grad.addColorStop(0, `hsl(${hue},100%,95%)`);
-    grad.addColorStop(0.5, `hsl(${hue},100%,50%)`);
-    grad.addColorStop(1, `hsl(${hue},100%,10%)`);
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0,    '#ffffff');
+    grad.addColorStop(0.45, `hsl(${hue},100%,50%)`);
+    grad.addColorStop(1,    '#000000');
     ctx.fillStyle = grad;
-    ctx.fillRect(x,0,1,h);
+    ctx.fillRect(x, 0, 1, h);
   }
-  const wg = ctx.createLinearGradient(0,0,w*0.3,0);
-  wg.addColorStop(0,'rgba(255,255,255,0.85)');
-  wg.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.fillStyle = wg;
-  ctx.fillRect(0,0,w,h);
 }
 drawPanel();
 
@@ -513,7 +504,18 @@ function pickColor(e) {
   selectedColor = `#${p[0].toString(16).padStart(2,'0')}${p[1].toString(16).padStart(2,'0')}${p[2].toString(16).padStart(2,'0')}`;
   swatch.style.background = selectedColor;
   updateActiveBtn();
+  updateColorCodeDisplay();
   checkReady();
+}
+
+function updateColorCodeDisplay() {
+  // 全ボタンのcodeをリセット
+  document.querySelectorAll('.emotion-btn .btn-code').forEach(e=>e.textContent='');
+  if (!selectedColor || !selectedEmotion) return;
+  const activeBtn = document.querySelector('.emotion-btn.active');
+  if (!activeBtn) return;
+  const codeSpan = activeBtn.querySelector('.btn-code');
+  if (codeSpan) codeSpan.textContent = selectedColor.toUpperCase();
 }
 canvas.addEventListener('click', pickColor);
 canvas.addEventListener('touchstart', e=>{e.preventDefault();pickColor(e);},{passive:false});
@@ -568,15 +570,24 @@ function updateButtons() {
   const usedEmotions = records.map((r,i)=>i===editingIndex?null:r.emotion).filter(Boolean);
   document.querySelectorAll('.emotion-btn').forEach(btn=>{
     const isUsed = usedEmotions.includes(btn.dataset.emotion);
-    if (isUsed) { btn.classList.add('hidden'); btn.disabled=true; }
-    else {
-      btn.classList.remove('hidden'); btn.disabled=false;
+    if (isUsed) {
+      // 記録済みはそのまま表示・色付き・タップで編集
+      btn.classList.remove('hidden');
+      btn.disabled = false;
+    } else {
+      btn.classList.remove('hidden');
+      btn.disabled = false;
       if (!btn.classList.contains('active')) {
         btn.style.background='rgba(255,255,255,0.06)';
         btn.style.color='rgba(255,255,255,0.7)';
+        btn.style.borderColor='rgba(255,255,255,0.2)';
+        const codeSpan = btn.querySelector('.btn-code');
+        if (codeSpan) codeSpan.textContent='';
+        btn.onclick = null;
       }
     }
   });
+  updateButtonStates();
 }
 
 document.querySelectorAll('.emotion-btn').forEach(btn=>{
@@ -612,50 +623,37 @@ document.getElementById('moreBtn').addEventListener('click',()=>{
 function updateColorIslands() {
   colorIslands.innerHTML='';
   document.querySelectorAll('[id^="igr"]').forEach(e=>e.remove());
-  const activeRecs = records.filter(r=>r.percent>0);
+  const activeRecs = records.filter(r=>r.percent>0).sort((a,b)=>b.percent-a.percent); // 大きい順
   if(activeRecs.length===0) return;
   const cx=100, cy=104, R=69;
   const defs = document.querySelector('#blobSvg defs');
   const n = activeRecs.length;
 
-  // %に応じた半径（球体面積を%で分割）
   const radii = activeRecs.map(rec => Math.max(8, R * Math.sqrt(rec.percent/100) * 0.88));
 
   // 重なりを30%以下に：2つの円が接触する距離 = r0+r1、重なり30%以下 = 距離 >= r0+r1-(min(r0,r1)*0.3)
   // つまり中心間距離 = r0 + r1 - overlap、overlapは小さい方の半径の30%まで
   function getPositions(radii) {
-    const n = radii.length;
-    if(n===1) return [{x:cx, y:cy}];
-    if(n===2) {
-      const r0=radii[0], r1=radii[1];
-      const overlap = Math.min(r0,r1) * 0.28; // 28%重なり
-      const dist = r0 + r1 - overlap;
-      return [
-        {x: cx - dist * (r1/(r0+r1)), y: cy},
-        {x: cx + dist * (r0/(r0+r1)), y: cy}
-      ];
+    const n=radii.length;
+    if(n===1) return [{x:cx,y:cy}];
+    if(n===2){
+      const r0=radii[0],r1=radii[1];
+      const dist=r0+r1+2; // 完全に離す
+      return [{x:cx-dist*(r1/(r0+r1)),y:cy},{x:cx+dist*(r0/(r0+r1)),y:cy}];
     }
-    if(n===3) {
-      const r0=radii[0], r1=radii[1], r2=radii[2];
-      const ov01 = Math.min(r0,r1)*0.28;
-      const ov02 = Math.min(r0,r2)*0.28;
-      const ov12 = Math.min(r1,r2)*0.28;
-      const d01 = r0+r1-ov01;
-      const d02 = r0+r2-ov02;
-      const d12 = r1+r2-ov12;
-      // 三角形配置
-      const x0 = cx - d01*0.5;
-      const x1 = cx + d01*0.5;
-      const y01 = cy - r0*0.15;
-      // 3番目は下
-      const y2 = cy + r2*0.7;
-      return [
-        {x: x0, y: y01},
-        {x: x1, y: y01},
-        {x: cx, y: y2}
-      ];
-    }
-    return [{x:cx,y:cy}];
+    // 3つ：三角形配置、完全に離す
+    const r0=radii[0],r1=radii[1],r2=radii[2];
+    const d01=r0+r1+2;
+    const d02=r0+r2+2;
+    const d12=r1+r2+2;
+    // コサイン定理で三角形の頂点を計算
+    const cosA = (d01*d01+d02*d02-d12*d12)/(2*d01*d02);
+    const sinA = Math.sqrt(Math.max(0,1-cosA*cosA));
+    return [
+      {x:cx,           y:cy-d02*sinA*0.6},
+      {x:cx-d01*0.5,   y:cy+d02*sinA*0.4},
+      {x:cx+d01*0.5,   y:cy+d02*sinA*0.4},
+    ];
   }
 
   const positions = getPositions(radii);
@@ -682,7 +680,7 @@ function updateColorIslands() {
 function updateEmotionLabels() {
   const labelsEl = document.getElementById('emotionLabels');
   labelsEl.innerHTML='';
-  const activeRecs = records.filter(r=>r.percent>0);
+  const activeRecs = records.filter(r=>r.percent>0).sort((a,b)=>b.percent-a.percent);
   if(activeRecs.length===0) return;
   const R=69;
   const cx=100, cy=104;
@@ -694,16 +692,22 @@ function updateEmotionLabels() {
     if(n===1) return [{x:cx,y:cy}];
     if(n===2){
       const r0=radii[0],r1=radii[1];
-      const overlap=Math.min(r0,r1)*0.28;
-      const dist=r0+r1-overlap;
+      const dist=r0+r1+2; // 完全に離す
       return [{x:cx-dist*(r1/(r0+r1)),y:cy},{x:cx+dist*(r0/(r0+r1)),y:cy}];
     }
-    if(n===3){
-      const r0=radii[0],r1=radii[1],r2=radii[2];
-      const d01=r0+r1-Math.min(r0,r1)*0.28;
-      return [{x:cx-d01*0.5,y:cy-r0*0.15},{x:cx+d01*0.5,y:cy-r1*0.15},{x:cx,y:cy+r2*0.7}];
-    }
-    return [{x:cx,y:cy}];
+    // 3つ：三角形配置、完全に離す
+    const r0=radii[0],r1=radii[1],r2=radii[2];
+    const d01=r0+r1+2;
+    const d02=r0+r2+2;
+    const d12=r1+r2+2;
+    // コサイン定理で三角形の頂点を計算
+    const cosA = (d01*d01+d02*d02-d12*d12)/(2*d01*d02);
+    const sinA = Math.sqrt(Math.max(0,1-cosA*cosA));
+    return [
+      {x:cx,           y:cy-d02*sinA*0.6},
+      {x:cx-d01*0.5,   y:cy+d02*sinA*0.4},
+      {x:cx+d01*0.5,   y:cy+d02*sinA*0.4},
+    ];
   }
 
   const positions=getPositions(radii);
@@ -715,24 +719,53 @@ function updateEmotionLabels() {
     text.setAttribute('font-weight','bold');
     const textColor=isLight(rec.color)?'#333333':'#ffffff';
     text.setAttribute('fill',textColor);text.setAttribute('fill-opacity','0.95');
+    text.setAttribute('stroke', textColor==='#ffffff' ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.4)');
+    text.setAttribute('stroke-width','0.3');
+    text.setAttribute('paint-order','stroke');
     text.setAttribute('style','font-family: Hiragino Sans, sans-serif;');
     text.textContent=rec.emotion;
     labelsEl.appendChild(text);
+
+    // %表示
+    const pctText=document.createElementNS('http://www.w3.org/2000/svg','text');
+    pctText.setAttribute('x',pos.x);
+    pctText.setAttribute('y',pos.y+12);
+    pctText.setAttribute('text-anchor','middle');
+    pctText.setAttribute('font-size','8');
+    pctText.setAttribute('fill',textColor);
+    pctText.setAttribute('fill-opacity','0.7');
+    pctText.setAttribute('stroke', textColor==='#ffffff' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)');
+    pctText.setAttribute('stroke-width','0.3');
+    pctText.setAttribute('paint-order','stroke');
+    pctText.setAttribute('style','font-family: Hiragino Sans, sans-serif;');
+    pctText.textContent=rec.percent+'%';
+    labelsEl.appendChild(pctText);
   });
 }
 
 function renderRecords() {
-  recordsEl.innerHTML='';
-  records.forEach((rec,i)=>{
-    const el=document.createElement('div');
-    el.className='record-item'+(editingIndex===i?' editing':'');
-    el.innerHTML=`<div class="record-swatch" style="background:${rec.color}"></div>
-      <span class="record-emotion">${rec.emotion}</span>
-      <span class="record-pct">${rec.percent}%</span>
-      <span class="record-code">${rec.color.toUpperCase()}</span>
-      <span class="record-edit">タップで修正</span>`;
-    el.addEventListener('click',()=>startEditing(i));
-    recordsEl.appendChild(el);
+  // 記録はボタンエリアで表現するため不要
+  // ボタンに色とカラーコードを反映
+  updateButtonStates();
+}
+
+function updateButtonStates() {
+  document.querySelectorAll(".emotion-btn").forEach(btn => {
+    const rec = records.find(r => r.emotion === btn.dataset.emotion);
+    if (rec) {
+      btn.style.background = rec.color;
+      btn.style.color = isLight(rec.color) ? "#333" : "#fff";
+      btn.style.borderColor = rec.color;
+      btn.classList.remove("hidden");
+      btn.disabled = false;
+      const codeSpan = btn.querySelector(".btn-code");
+      if (codeSpan) codeSpan.textContent = rec.color.toUpperCase();
+      // タップで編集
+      btn.onclick = () => {
+        const idx = records.findIndex(r => r.emotion === btn.dataset.emotion);
+        if (idx >= 0) startEditing(idx);
+      };
+    }
   });
 }
 
@@ -744,10 +777,45 @@ function startEditing(index) {
   const btn=[...document.querySelectorAll('.emotion-btn')].find(b=>b.dataset.emotion===rec.emotion);
   if(btn){btn.disabled=false;btn.classList.remove('hidden');btn.classList.add('active');btn.style.background=rec.color;btn.style.color=isLight(rec.color)?'#333':'#fff';}
   selectedEmotion=rec.emotion;selectedType=rec.type;selectedColor=rec.color;selectedPercent=rec.percent;
-  swatch.style.background=rec.color;codeEl.textContent=rec.color.toUpperCase();
+  swatch.style.background=rec.color;
   percentSlider.value=rec.percent;percentValue.textContent=rec.percent+'%';
   blob.className='blob '+rec.type;
-  updateSliderMax();checkReady();renderRecords();
+  updateSliderMax();checkReady();
+
+// ── 目盛りSVG描画 ──
+function drawTicks() {
+  const canvas = document.getElementById('tickCanvas');
+  if (!canvas) return;
+  const W = canvas.offsetWidth;
+  if (!W) { setTimeout(drawTicks, 200); return; }
+  canvas.width = W;
+  canvas.height = 16;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,16);
+  // スライダーのサム分のマージン（約10px）
+  const margin = 10;
+  const trackW = W - margin*2;
+  for (let v = 10; v <= 90; v += 10) {
+    const x = margin + (v/100)*trackW;
+    const isMid = v===50;
+    const h = isMid ? 12 : 7;
+    const lw = isMid ? 2.5 : 1.2;
+    ctx.strokeStyle = isMid ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.moveTo(x, (16-h)/2);
+    ctx.lineTo(x, (16+h)/2);
+    ctx.stroke();
+  }
+}
+window.addEventListener('resize', drawTicks);
+setTimeout(drawTicks, 100);
+
+// ── カラーパレット：移動中もリアルタイム更新 ──
+canvas.addEventListener('mousemove', e => {
+  if (e.buttons !== 1) return; // 左ボタン押しながら
+  pickColor(e);
+});renderRecords();
 }
 
 function addRecord(emotion,color,type,percent) {
@@ -768,10 +836,53 @@ function addRecord(emotion,color,type,percent) {
 function resetInput() {
   selectedColor=null;selectedEmotion=null;selectedType=null;selectedPercent=50;editingIndex=-1;
   percentSlider.value=50;percentValue.textContent='50%';
-  swatch.style.background='#888';codeEl.textContent='色を選んでください';
-  document.querySelectorAll('.emotion-btn').forEach(b=>{b.classList.remove('active');b.style.background='rgba(255,255,255,0.06)';b.style.color='rgba(255,255,255,0.7)';});
+  swatch.style.background='#888';  document.querySelectorAll('.emotion-btn').forEach(b=>{b.classList.remove('active');b.style.background='rgba(255,255,255,0.06)';b.style.color='rgba(255,255,255,0.7)';});
   blob.className='blob';
+  document.querySelectorAll('.emotion-btn').forEach(b=>{
+    const rec=records.find(r=>r.emotion===b.dataset.emotion);
+    if(!rec){
+      b.style.background='rgba(255,255,255,0.06)';
+      b.style.color='rgba(255,255,255,0.7)';
+      b.style.borderColor='rgba(255,255,255,0.2)';
+      const cs=b.querySelector('.btn-code'); if(cs)cs.textContent='';
+    }
+  });
   updateEmotionLabels();updateButtons();updateSliderMax();checkReady();
+
+// ── 目盛りSVG描画 ──
+function drawTicks() {
+  const canvas = document.getElementById('tickCanvas');
+  if (!canvas) return;
+  const W = canvas.offsetWidth;
+  if (!W) { setTimeout(drawTicks, 200); return; }
+  canvas.width = W;
+  canvas.height = 16;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,16);
+  // スライダーのサム分のマージン（約10px）
+  const margin = 10;
+  const trackW = W - margin*2;
+  for (let v = 10; v <= 90; v += 10) {
+    const x = margin + (v/100)*trackW;
+    const isMid = v===50;
+    const h = isMid ? 12 : 7;
+    const lw = isMid ? 2.5 : 1.2;
+    ctx.strokeStyle = isMid ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.moveTo(x, (16-h)/2);
+    ctx.lineTo(x, (16+h)/2);
+    ctx.stroke();
+  }
+}
+window.addEventListener('resize', drawTicks);
+setTimeout(drawTicks, 100);
+
+// ── カラーパレット：移動中もリアルタイム更新 ──
+canvas.addEventListener('mousemove', e => {
+  if (e.buttons !== 1) return; // 左ボタン押しながら
+  pickColor(e);
+});
 }
 
 function showModal() {
@@ -800,13 +911,48 @@ applyBtn.addEventListener('click',()=>{
 
 updateSliderMax();checkReady();
 
+// ── 目盛りSVG描画 ──
+function drawTicks() {
+  const canvas = document.getElementById('tickCanvas');
+  if (!canvas) return;
+  const W = canvas.offsetWidth;
+  if (!W) { setTimeout(drawTicks, 200); return; }
+  canvas.width = W;
+  canvas.height = 16;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,16);
+  // スライダーのサム分のマージン（約10px）
+  const margin = 10;
+  const trackW = W - margin*2;
+  for (let v = 10; v <= 90; v += 10) {
+    const x = margin + (v/100)*trackW;
+    const isMid = v===50;
+    const h = isMid ? 12 : 7;
+    const lw = isMid ? 2.5 : 1.2;
+    ctx.strokeStyle = isMid ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.moveTo(x, (16-h)/2);
+    ctx.lineTo(x, (16+h)/2);
+    ctx.stroke();
+  }
+}
+window.addEventListener('resize', drawTicks);
+setTimeout(drawTicks, 100);
+
+// ── カラーパレット：移動中もリアルタイム更新 ──
+canvas.addEventListener('mousemove', e => {
+  if (e.buttons !== 1) return; // 左ボタン押しながら
+  pickColor(e);
+});
+
 // ── タブ切り替え ──
 function switchTab(tab) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('screen-'+tab).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    if(['tool','about','history'][i]===tab) b.classList.add('active');
+    if(['tool','history','about'][i]===tab) b.classList.add('active');
   });
   if(tab==='history') renderHistory();
 }
@@ -823,13 +969,96 @@ function saveToHistory() {
   if(records.length===0) return;
   try {
     const history = JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
-    history[getTodayKey()] = records;
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const recordsWithTime = records.map(r=>({...r, savedAt: timeStr}));
+    history[getTodayKey()] = recordsWithTime;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
   } catch(e){}
 }
 
 // addRecordの後に保存を呼ぶ
 const _origAddRecord = addRecord;
+
+function makeBlobSvg(recs) {
+  const cx=100, cy=104, R=69;
+  const activeRecs = recs.filter(r=>r.percent>0).sort((a,b)=>b.percent-a.percent);
+  const n = activeRecs.length;
+  if(activeRecs.length===0) return '';
+
+  const scale = n===1?1.0:n===2?1.42:1.72;
+  const radii = activeRecs.map(rec=>Math.max(8, R*Math.sqrt(rec.percent/100)*0.88));
+
+  function getPositions(radii) {
+    const n=radii.length;
+    if(n===1) return [{x:cx,y:cy}];
+    if(n===2){
+      const r0=radii[0],r1=radii[1];
+      const dist=r0+r1+2; // 完全に離す
+      return [{x:cx-dist*(r1/(r0+r1)),y:cy},{x:cx+dist*(r0/(r0+r1)),y:cy}];
+    }
+    // 3つ：三角形配置、完全に離す
+    const r0=radii[0],r1=radii[1],r2=radii[2];
+    const d01=r0+r1+2;
+    const d02=r0+r2+2;
+    const d12=r1+r2+2;
+    // コサイン定理で三角形の頂点を計算
+    const cosA = (d01*d01+d02*d02-d12*d12)/(2*d01*d02);
+    const sinA = Math.sqrt(Math.max(0,1-cosA*cosA));
+    return [
+      {x:cx,           y:cy-d02*sinA*0.6},
+      {x:cx-d01*0.5,   y:cy+d02*sinA*0.4},
+      {x:cx+d01*0.5,   y:cy+d02*sinA*0.4},
+    ];
+  }
+
+  const positions = getPositions(radii);
+  const uid = Math.random().toString(36).slice(2,7);
+
+  const gradDefs = activeRecs.map((rec,i)=>`
+    <radialGradient id="hg${uid}${i}" cx="36%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="18%" stop-color="${rec.color}" stop-opacity="0.97"/>
+      <stop offset="100%" stop-color="${rec.color}" stop-opacity="0.82"/>
+    </radialGradient>`).join('');
+
+  const circles = activeRecs.map((rec,i)=>{
+    const pos=positions[i]; const r=radii[i];
+    const lum = (parseInt(rec.color.slice(1,3),16)*299+parseInt(rec.color.slice(3,5),16)*587+parseInt(rec.color.slice(5,7),16)*114)/1000;
+    const tc = lum>128?'#333':'#fff';
+    return `<circle cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="${r.toFixed(1)}" fill="url(#hg${uid}${i})" clip-path="url(#hbc${uid})"/>
+    <text x="${pos.x.toFixed(1)}" y="${(pos.y+4).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="bold" fill="${tc}" fill-opacity="0.95" stroke="${tc==='#ffffff'?'rgba(0,0,0,0.4)':'rgba(255,255,255,0.4)'}" stroke-width="0.4" paint-order="stroke" style="font-family:Hiragino Sans,sans-serif;">${rec.emotion}</text>
+    <text x="${pos.x.toFixed(1)}" y="${(pos.y+18).toFixed(1)}" text-anchor="middle" font-size="10" fill="${tc}" fill-opacity="0.7" stroke="${tc==='#ffffff'?'rgba(0,0,0,0.3)':'rgba(255,255,255,0.3)'}" stroke-width="0.3" paint-order="stroke" style="font-family:Hiragino Sans,sans-serif;">${rec.percent}%</text>`;
+  }).join('');
+
+  return `<svg viewBox="0 0 200 200" width="156" height="156" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      ${gradDefs}
+      <clipPath id="hbc${uid}"><ellipse cx="100" cy="104" rx="70" ry="74"/></clipPath>
+      <radialGradient id="hog${uid}" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#a0e8f8" stop-opacity=".18"/>
+        <stop offset="100%" stop-color="#40b8d8" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="hbl${uid}"><feGaussianBlur stdDeviation="7"/></filter>
+      <filter id="htb${uid}"><feGaussianBlur stdDeviation="1.8"/></filter>
+      <radialGradient id="hil${uid}" cx="36%" cy="28%" r="60%">
+        <stop offset="0%" stop-color="#fff" stop-opacity=".85"/>
+        <stop offset="100%" stop-color="#c0eeff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="hhl${uid}" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fff" stop-opacity="1"/>
+        <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="100" cy="102" rx="88" ry="90" fill="url(#hog${uid})" filter="url(#hbl${uid})" opacity=".25"/>
+    <ellipse cx="100" cy="104" rx="72" ry="76" fill="rgba(255,255,255,0.04)"/>
+    ${circles}
+    <ellipse cx="100" cy="104" rx="72" ry="76" fill="none" stroke="#90d8f0" stroke-width=".7" stroke-opacity=".22"/>
+    <ellipse cx="80" cy="74" rx="46" ry="36" fill="url(#hil${uid})" filter="url(#htb${uid})" opacity=".5"/>
+    <ellipse cx="73" cy="62" rx="20" ry="13" fill="url(#hhl${uid})"/>
+    <ellipse cx="60" cy="54" rx="7" ry="4.5" fill="white" fill-opacity=".9"/>
+  </svg>`;
+}
 
 function renderHistory() {
   const content = document.getElementById('historyContent');
@@ -842,17 +1071,16 @@ function renderHistory() {
     }
     content.innerHTML = keys.map(dateKey=>{
       const recs = history[dateKey];
-      const cards = recs.map(r=>`
-        <div class="history-record">
-          <div class="history-swatch" style="background:${r.color}"></div>
-          <span class="history-emotion">${r.emotion}</span>
-          <span class="history-pct">${r.percent}%</span>
-        </div>`).join('');
-      const d = new Date(dateKey);
-      const label = `${d.getMonth()+1}月${d.getDate()}日`;
+      const d = new Date(dateKey + 'T00:00:00+09:00');
+      const weekdays = ['日','月','火','水','木','金','土'];
+      const wday = weekdays[d.getDay()];
+      const timeStr = recs[0] && recs[0].savedAt ? `　${recs[0].savedAt}` : '';
+      const timeOnly = recs[0] && recs[0].savedAt ? recs[0].savedAt : '';
+      const dateLabel = `<div class="history-date-day">${d.getMonth()+1}.${d.getDate()}（${wday}）</div>
+        <div class="history-date-time">${timeOnly ? `${timeOnly}　` : ''}<span class="history-date-year">${d.getFullYear()}</span></div>`;
       return `<div class="history-day">
-        <div class="history-date">${label}</div>
-        <div class="history-records">${cards}</div>
+        <div class="history-date-block">${dateLabel}</div>
+        <div>${makeBlobSvg(recs)}</div>
       </div>`;
     }).join('');
   } catch(e){
